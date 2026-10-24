@@ -173,10 +173,10 @@ export function initButtonFeedback() {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(email);
-          showToast(`Copied ${email} to clipboard — launching mail...`, '✉', 3200);
+          showToast(`Copied ${email} to clipboard`, '✓', 2800);
         }
       } catch {
-        showToast(`Opening mail client to ${email}...`, '✉', 2500);
+        showToast(`Opening mail...`, '✓', 2200);
       }
       return;
     }

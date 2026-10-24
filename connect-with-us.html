@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Connect directly with Ov.EL Labs' founding engineers to scope and build high-performance software.">
+  <meta name="description" content="Get in touch with Rohit and Veeresh at Ov.EL Labs about your website, app, or software project.">
   <title>Connect with Us — Ov.EL Labs</title>
   <link rel="icon" type="image/png" href="favicon.png" sizes="512x512">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,15 +18,14 @@
       --ink: #111111;
       --muted: #686663;
       --violet: #6342FF;
-      --violet-light: rgba(99,66,255,0.08);
-      --violet-border: rgba(99,66,255,0.25);
+      --violet-light: rgba(99,66,255,0.06);
+      --violet-border: rgba(99,66,255,0.22);
       --line: rgba(17,17,17,.12);
       --emerald: #059669;
       --emerald-bg: rgba(5,150,105,0.06);
-      --emerald-border: rgba(5,150,105,0.28);
       --rose: #DC2626;
       --rose-bg: rgba(220,38,38,0.06);
-      --rose-border: rgba(220,38,38,0.28);
+      --rose-border: rgba(220,38,38,0.22);
       font-family: Satoshi, sans-serif;
       color: var(--ink);
       background: var(--canvas);
@@ -130,7 +129,7 @@
     h2 { font-size: clamp(26px, 4vw, 36px); letter-spacing: -.045em; margin: 0; font-weight: 600; }
     .section-copy { color: var(--muted); line-height: 1.7; margin: 0 0 28px; max-width: 620px; font-size: 15px; }
 
-    /* Founders Leadership Grid */
+    /* Founders Grid */
     .founders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .founder {
       display: grid;
@@ -155,9 +154,9 @@
     }
     .founder h3 { font-size: 20px; letter-spacing: -.03em; margin: 0 0 4px; }
     .founder p { font: 10px 'Space Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--violet); margin: 0 0 8px; font-weight: 700; }
-    .founder-bio { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 0; }
+    .founder-bio { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; }
 
-    /* Contact Direct Channels */
+    /* Direct Contact Cards */
     .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .contact-card {
       padding: 20px;
@@ -172,9 +171,9 @@
     .contact-card span { font: 10px 'Space Mono', monospace; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); }
     .contact-card a { font-size: 17px; font-weight: 600; text-decoration: none; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
     .contact-card a:hover { color: var(--violet); }
-    .contact-hint { font: 10px 'Space Mono', monospace; color: var(--muted); }
+    .contact-hint { font: 11px 'Space Mono', monospace; color: var(--muted); }
 
-    /* Project Brief Form */
+    /* Form */
     form { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 24px; }
     .field { display: grid; gap: 8px; }
     .field.full { grid-column: 1 / -1; }
@@ -197,7 +196,7 @@
     }
     .field textarea { min-height: 130px; resize: vertical; line-height: 1.6; }
 
-    /* Submit Bar */
+    /* Submit Row */
     .form-foot {
       grid-column: 1 / -1;
       display: flex;
@@ -259,9 +258,7 @@
       50% { opacity: .5; transform: scale(1.3); }
     }
 
-    /* ----------------------------------------------------------------------
-     * Designed Response Alert Cards (Submitting, Confirmed, Delayed)
-     * ---------------------------------------------------------------------- */
+    /* Response Alert Cards */
     .response-alert {
       grid-column: 1 / -1;
       min-height: 0;
@@ -442,107 +439,107 @@
   <main>
     <div class="intro">
       <div>
-        <div class="eyebrow"><b>Ov.EL Labs</b> / Direct Engagement</div>
+        <div class="eyebrow"><b>Ov.EL Labs</b> / Contact</div>
         <h1>Connect<br>with <span>Us.</span></h1>
       </div>
-      <p>Partner directly with our founding engineers. We translate complex product requirements into resilient architectures, transparent milestones, and production software.</p>
+      <p>Have a project in mind, or just want to chat through an idea? Tell us what you're working on and we'll get back to you within a day.</p>
     </div>
     <div class="layout">
       <nav class="rail" aria-label="Page navigation">
-        <p class="rail-title">Navigation</p>
+        <p class="rail-title">On this page</p>
         <div class="rail-links">
-          <a href="#founders" aria-current="location">01 / Leadership</a>
-          <a href="#contact">02 / Direct Line</a>
-          <a href="#message">03 / Project Brief</a>
+          <a href="#founders" aria-current="location">01 / Team</a>
+          <a href="#contact">02 / Direct Contact</a>
+          <a href="#message">03 / Send a Message</a>
         </div>
       </nav>
       <div class="content">
-        <!-- Section 01: Engineering Leadership -->
+        <!-- Section 01: The Team -->
         <section class="block" id="founders" aria-labelledby="founders-title">
-          <div class="block-head"><span class="number">01</span><h2 id="founders-title">Engineering Leadership</h2></div>
-          <p class="section-copy">You collaborate directly with co-founders Rohit and Veeresh. We eliminate agency layers, sales intermediaries, and communication dilution—ensuring senior architectural ownership from day one.</p>
+          <div class="block-head"><span class="number">01</span><h2 id="founders-title">Who you'll work with</h2></div>
+          <p class="section-copy">When you work with Ov.EL Labs, you talk directly with Rohit and Veeresh. No middle managers or hand-offs—just two engineers who build and ship your product.</p>
           <div class="founders">
             <article class="founder">
-              <img class="founder-photo" src="assets/rohit.jpg" alt="Rohit — Co-founder & Engineering Lead">
+              <img class="founder-photo" src="assets/rohit.jpg" alt="Rohit — Co-founder">
               <div>
                 <h3>Rohit</h3>
-                <p>Co-founder · Engineering Lead</p>
-                <p class="founder-bio">Specializing in high-performance web applications, native platforms, and custom software architectures.</p>
+                <p>Co-founder</p>
+                <p class="founder-bio">Builds websites, web apps, and mobile apps with a focus on smooth interactions and thoughtful design.</p>
               </div>
             </article>
             <article class="founder">
-              <img class="founder-photo" src="assets/veeresh.jpg" alt="Veeresh — Co-founder & Systems Architect">
+              <img class="founder-photo" src="assets/veeresh.jpg" alt="Veeresh — Co-founder">
               <div>
                 <h3>Veeresh</h3>
-                <p>Co-founder · Systems Architecture</p>
-                <p class="founder-bio">Focusing on resilient Linux infrastructure, cloud pipelines, and scalable backend integrations.</p>
+                <p>Co-founder</p>
+                <p class="founder-bio">Focuses on backend systems, cloud infrastructure, and making sure servers stay fast and reliable.</p>
               </div>
             </article>
           </div>
         </section>
 
-        <!-- Section 02: Direct Channels -->
+        <!-- Section 02: Direct Contact -->
         <section class="block" id="contact" aria-labelledby="contact-title">
-          <div class="block-head"><span class="number">02</span><h2 id="contact-title">Direct Communication</h2></div>
-          <p class="section-copy">Need immediate architectural consultation or prefer direct correspondence? Connect with our desks via priority email or phone.</p>
+          <div class="block-head"><span class="number">02</span><h2 id="contact-title">Reach us directly</h2></div>
+          <p class="section-copy">Prefer to skip the form? Drop us an email or give us a call directly.</p>
           <div class="contact-grid">
             <div class="contact-card">
-              <span>Priority Email</span>
+              <span>Email</span>
               <a href="mailto:hello@ovelab.in">hello@ovelab.in <span aria-hidden="true">↗</span></a>
-              <span class="contact-hint">Founder reviewed within 24 hours</span>
+              <span class="contact-hint">We usually reply within a few hours</span>
             </div>
             <div class="contact-card">
-              <span>Direct Phone</span>
+              <span>Phone</span>
               <a href="tel:+919741198442">+91 97411 98442 <span aria-hidden="true">↗</span></a>
-              <span class="contact-hint">Studio hours: 10:00 — 19:00 IST</span>
+              <span class="contact-hint">Mon – Fri, 10am – 7pm IST</span>
             </div>
           </div>
         </section>
 
-        <!-- Section 03: Initiate Project Brief -->
+        <!-- Section 03: Tell us about your project -->
         <section class="block" id="message" aria-labelledby="message-title">
-          <div class="block-head"><span class="number">03</span><h2 id="message-title">Initiate Your Project Brief</h2></div>
-          <p class="section-copy">Detail your product vision, system requirements, or deadlines below. We analyze every brief in detail and reply within 24 hours with scheduled availability for your 20-minute strategy call.</p>
+          <div class="block-head"><span class="number">03</span><h2 id="message-title">Tell us about your project</h2></div>
+          <p class="section-copy">Share a few notes on what you'd like to build, your timeline, or any questions you have. We'll read through it and set up a quick 20-minute call to talk details.</p>
           
           <form id="project-form">
             <div class="field">
-              <label for="name">Full Name <span class="field-hint">Required</span></label>
-              <input id="name" name="name" autocomplete="name" placeholder="e.g. Alex Mercer" required>
+              <label for="name">Your name <span class="field-hint">Required</span></label>
+              <input id="name" name="name" autocomplete="name" placeholder="e.g. Alex" required>
             </div>
             <div class="field">
-              <label for="email">Work Email <span class="field-hint">Required</span></label>
-              <input id="email" name="email" type="email" autocomplete="email" placeholder="e.g. alex@company.com" required>
+              <label for="email">Your email <span class="field-hint">Required</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="e.g. alex@example.com" required>
             </div>
             <div class="field full">
-              <label for="project-type">Project Architecture <span class="field-hint">Select primary scope</span></label>
+              <label for="project-type">What do you need help with? <span class="field-hint">Select one</span></label>
               <select id="project-type" name="project" required>
-                <option value="" disabled selected>Select project architecture</option>
-                <option value="Website & Web Application">Website & Web Application</option>
-                <option value="iOS & Mobile Application">iOS & Mobile Application</option>
-                <option value="Custom Bespoke Software">Custom Bespoke Software</option>
-                <option value="Cloud Infrastructure & Linux Systems">Cloud Infrastructure & Linux Systems</option>
-                <option value="AI & Machine Learning Services">AI & Machine Learning Services</option>
-                <option value="Specialized Architecture">Specialized Architecture</option>
+                <option value="" disabled selected>Select a project type</option>
+                <option value="Website or web app">Website or web app</option>
+                <option value="Mobile app (iOS / Android)">Mobile app (iOS / Android)</option>
+                <option value="Custom software">Custom software</option>
+                <option value="Cloud or Linux server support">Cloud or Linux server support</option>
+                <option value="AI & machine learning">AI & machine learning</option>
+                <option value="Something else">Something else</option>
               </select>
             </div>
             <div class="field full">
-              <label for="details">Project Objectives & Requirements <span class="field-hint" id="char-hint">Detailed brief</span></label>
-              <textarea id="details" name="details" placeholder="Describe your product concept, target audience, core technical features, timeline, or architecture constraints..." required></textarea>
+              <label for="details">A little about what you're building <span class="field-hint" id="char-hint">A few sentences</span></label>
+              <textarea id="details" name="details" placeholder="What are you hoping to create? Tell us a bit about the idea, your timeline, or anything you're curious about..." required></textarea>
             </div>
             
             <div class="form-foot" id="form-foot">
               <button class="submit" id="submit-btn" type="submit">
                 <span class="btn-spinner" aria-hidden="true"></span>
-                <span class="btn-label">Transmit Project Brief</span>
+                <span class="btn-label">Send message</span>
                 <span class="btn-arrow" aria-hidden="true">→</span>
               </button>
               <span class="form-note">
                 <span class="live-dot" aria-hidden="true"></span>
-                Guaranteed founder response within 24 hours
+                We reply within 24 hours
               </span>
             </div>
 
-            <!-- Dynamic Rich Response Alert Container -->
+            <!-- Response Alert Container -->
             <div class="response-alert" id="form-alert" role="status" aria-live="polite"></div>
           </form>
         </section>
@@ -552,7 +549,7 @@
 
   <footer class="footer">
     <span>Ov.EL Labs — Bangalore, India</span>
-    <a href="index.html">Back to Main Overview ↑</a>
+    <a href="index.html">Back to Main Site ↑</a>
   </footer>
 
   <script>
@@ -586,22 +583,22 @@
     const detailsArea = document.querySelector('#details');
     const charHint = document.querySelector('#char-hint');
 
-    // Live character counter feedback
+    // Simple character counter hint
     detailsArea.addEventListener('input', () => {
       const len = detailsArea.value.trim().length;
       if (len === 0) {
-        charHint.textContent = 'Detailed brief';
+        charHint.textContent = 'A few sentences';
         charHint.style.color = 'var(--muted)';
-      } else if (len < 20) {
-        charHint.textContent = `${len} chars (brief)`;
+      } else if (len < 30) {
+        charHint.textContent = `${len} characters`;
         charHint.style.color = 'var(--muted)';
       } else {
-        charHint.textContent = `${len} chars — detailed`;
+        charHint.textContent = 'Looking great!';
         charHint.style.color = 'var(--violet)';
       }
     });
 
-    // Form submission with affirmative response alert design
+    // Form submission handling
     form.addEventListener('submit', async event => {
       event.preventDefault();
       if (!form.reportValidity()) return;
@@ -614,18 +611,18 @@
         details: data.get('details')
       };
 
-      // 1. Enter Loading State
+      // 1. Loading State
       submitBtn.disabled = true;
       submitBtn.classList.add('is-loading');
-      btnLabel.textContent = 'Transmitting...';
+      btnLabel.textContent = 'Sending message...';
 
       alertContainer.innerHTML = `
         <div class="alert-box alert-loading">
           <div class="alert-spinner" aria-hidden="true"></div>
           <div class="alert-content">
-            <div class="alert-tag">DISPATCH IN PROGRESS</div>
-            <h4>Transmitting Project Brief</h4>
-            <p class="alert-desc" style="margin-bottom:0">Encrypting and dispatching your project dossier directly to engineering leadership...</p>
+            <div class="alert-tag">Sending</div>
+            <h4>Sending your message...</h4>
+            <p class="alert-desc" style="margin-bottom:0">Passing your note directly to Rohit and Veeresh.</p>
           </div>
         </div>
       `;
@@ -638,11 +635,10 @@
           body: JSON.stringify(payload)
         });
 
-        // 2. Affirmative Success State
+        // 2. Success State
         submitBtn.classList.remove('is-loading');
-        btnLabel.textContent = '✓ Transmitted';
+        btnLabel.textContent = '✓ Sent';
 
-        // Render designed success alert
         alertContainer.innerHTML = `
           <div class="alert-box alert-success">
             <div class="alert-badge" aria-hidden="true">
@@ -651,25 +647,23 @@
               </svg>
             </div>
             <div class="alert-content">
-              <div class="alert-tag">DISPATCH CONFIRMED</div>
-              <h4>Project Brief Received &amp; Queued</h4>
-              <p class="alert-desc">Your project brief has been logged and transmitted directly to founding engineers <strong>Rohit &amp; Veeresh</strong>. We review every brief thoroughly—no automated boilerplate or sales intermediaries.</p>
+              <div class="alert-tag">Message received</div>
+              <h4>Thanks for reaching out!</h4>
+              <p class="alert-desc">We got your note and sent it straight to Rohit and Veeresh. One of us will review what you wrote and get back to you within 24 hours to schedule a quick 20-minute call.</p>
               
               <div class="alert-summary">
-                <div class="summary-item"><span class="summary-k">Inquirer</span><span class="summary-v">${escapeHtml(payload.name)} (${escapeHtml(payload.email)})</span></div>
-                <div class="summary-item"><span class="summary-k">Architecture</span><span class="summary-v">${escapeHtml(payload.project)}</span></div>
-                <div class="summary-item"><span class="summary-k">Commitment</span><span class="summary-v">Direct founder reply within 24 hours</span></div>
+                <div class="summary-item"><span class="summary-k">From</span><span class="summary-v">${escapeHtml(payload.name)} (${escapeHtml(payload.email)})</span></div>
+                <div class="summary-item"><span class="summary-k">Looking for</span><span class="summary-v">${escapeHtml(payload.project)}</span></div>
+                <div class="summary-item"><span class="summary-k">Response time</span><span class="summary-v">Within 24 hours</span></div>
               </div>
-
-              <p class="alert-next">Next Step: Look out for our email with preliminary architecture considerations and scheduled availability for your 20-minute strategy call.</p>
 
               <div class="alert-actions">
                 <button type="button" class="btn-alert-secondary" id="btn-submit-another">
-                  <span>Transmit Another Brief</span>
+                  <span>Send another note</span>
                   <span aria-hidden="true">↺</span>
                 </button>
                 <a href="index.html" class="btn-alert-primary">
-                  <span>Explore Ov.EL Labs</span>
+                  <span>Back to main site</span>
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
@@ -678,21 +672,21 @@
         `;
 
         form.reset();
-        charHint.textContent = 'Detailed brief';
+        charHint.textContent = 'A few sentences';
         charHint.style.color = 'var(--muted)';
 
         document.querySelector('#btn-submit-another')?.addEventListener('click', () => {
           alertContainer.innerHTML = '';
           submitBtn.disabled = false;
-          btnLabel.textContent = 'Transmit Project Brief';
+          btnLabel.textContent = 'Send message';
           document.querySelector('#name').focus();
         });
 
       } catch (err) {
-        // 3. Designed Error State
+        // 3. Error State
         submitBtn.disabled = false;
         submitBtn.classList.remove('is-loading');
-        btnLabel.textContent = 'Retry Transmission';
+        btnLabel.textContent = 'Try sending again';
 
         alertContainer.innerHTML = `
           <div class="alert-box alert-error">
@@ -704,15 +698,15 @@
               </svg>
             </div>
             <div class="alert-content">
-              <div class="alert-tag alert-tag-error">TRANSMISSION DELAY</div>
-              <h4>Service Handshake Interrupted</h4>
-              <p class="alert-desc">We encountered a temporary connection issue. Your brief is preserved in the form fields. You can retry transmission immediately or connect directly via email.</p>
+              <div class="alert-tag alert-tag-error">Connection error</div>
+              <h4>Couldn't send message</h4>
+              <p class="alert-desc">Looks like our form service had a temporary hiccup. Your message is still saved in the form below. You can try sending again, or just email us directly.</p>
               <div class="alert-actions">
                 <button type="button" class="btn-alert-primary" id="btn-retry-submit">
-                  <span>Retry Transmission</span>
+                  <span>Try sending again</span>
                   <span aria-hidden="true">↻</span>
                 </button>
-                <a href="mailto:hello@ovelab.in?subject=Project%20Brief%20from%20${encodeURIComponent(payload.name)}" class="btn-alert-secondary">
+                <a href="mailto:hello@ovelab.in?subject=Project%20inquiry%20from%20${encodeURIComponent(payload.name)}" class="btn-alert-secondary">
                   <span>Email hello@ovelab.in</span>
                   <span aria-hidden="true">↗</span>
                 </a>
