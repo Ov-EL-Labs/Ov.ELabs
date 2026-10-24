@@ -323,3 +323,124 @@ footer img { display: block; width: 7rem; height: 2rem; object-fit: cover; objec
   .preloader-v { font-size: clamp(3.5rem, 12.6vw, 4.6rem); }
 }
 @media (prefers-reduced-motion: reduce) { .ovel-preloader { display: none; } }
+
+/* --------------------------------------------------------------------------
+ * Tactile Feedback Loops & Micro-Interactions
+ * -------------------------------------------------------------------------- */
+.ovel-ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(99,66,255,.32) 0%, rgba(99,66,255,.08) 60%, transparent 80%);
+  transform: scale(0);
+  animation: ovelRippleAnim .55s cubic-bezier(.2,.8,.2,1) forwards;
+  z-index: 10;
+}
+@keyframes ovelRippleAnim {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.ovel-spark-container {
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.ovel-click-spark {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ovelSparkFly .5s cubic-bezier(.16,1,.3,1) forwards;
+  box-shadow: 0 0 6px rgba(99,66,255,.45);
+}
+@keyframes ovelSparkFly {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Satisfying button press physics */
+button,
+.submit,
+.hero-primary,
+.hero-secondary,
+.pricing-card-action,
+header a:has(span),
+.site-footer-contact,
+.back-link {
+  position: relative;
+  overflow: hidden;
+  transition: transform .12s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease, background-color .2s ease, color .2s ease !important;
+}
+button:active,
+.submit:active,
+.hero-primary:active,
+.pricing-card-action:active,
+header a:has(span):active {
+  transform: scale(0.965) translateY(1px) !important;
+}
+.hero-secondary:active,
+.back-link:active {
+  transform: scale(0.97) !important;
+}
+
+/* Toast feedback alert */
+.ovel-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #111;
+  color: #fbf9f5;
+  font: 500 12px/1.3 'Space Mono', monospace;
+  letter-spacing: .02em;
+  box-shadow: 0 16px 36px -6px rgba(17,17,17,.45), 0 0 0 1px rgba(255,255,255,.14);
+  transform: translateY(24px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .25s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+}
+.ovel-toast.is-visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.ovel-toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #6342ff;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+@media (max-width: 640px) {
+  .ovel-toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    justify-content: center;
+    font-size: 11px;
+    padding: 10px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ovel-ripple, .ovel-spark-container { display: none !important; }
+}
