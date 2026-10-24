@@ -48,6 +48,7 @@ if (section && stage && track && miniCards.length && miniLabel && cards.length) 
           start: "top top+=80",
           end: () => `+=${getScrollAmount()}`,
           pin: true,
+          pinSpacing: "margin",
           scrub: 0.8,
           invalidateOnRefresh: true,
           onUpdate: self => updateMiniDeck(self.progress),
