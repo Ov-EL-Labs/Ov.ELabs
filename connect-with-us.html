@@ -56,7 +56,7 @@
             <div class="field"><label for="email">Your email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
             <div class="field full"><label for="project-type">What are you looking to build?</label><select id="project-type" name="project" required><option value="" disabled selected>Select a project type</option><option>Website</option><option>Mobile app</option><option>Custom software</option><option>Cloud or Linux support</option><option>Something else</option></select></div>
             <div class="field full"><label for="details">A little about the project</label><textarea id="details" name="details" placeholder="What are you hoping to make?" required></textarea></div>
-            <div class="form-foot"><button class="submit" type="submit">Send project details <span aria-hidden="true">→</span></button><span class="form-note">The Google Apps Script endpoint is not connected yet. No email will be sent.</span></div>
+            <div class="form-foot"><button class="submit" type="submit">Send project details <span aria-hidden="true">→</span></button><span class="form-note">We respond within 24 hours.</span></div>
             <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
           </form>
         </section>
@@ -68,8 +68,8 @@
     const sections=[...document.querySelectorAll('.content > section')];
     const links=[...document.querySelectorAll('.rail-links a')];
     if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){links.forEach(link=>{if(link.hash==='#'+entry.target.id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')})}}},{rootMargin:'-20% 0px -65% 0px'});sections.forEach(section=>observer.observe(section))}
-    const APPS_SCRIPT_ENDPOINT = 'https://script.google.com/macros/s/AKfycby1MrGyTfeO-gh_6UD8D2Qfyip9Ln5BG3FeXBnbEf7eZnkqFTW4SCkP4A7EoaLDCNeFmQ/exec';
-    document.querySelector('#project-form').addEventListener('submit',event=>{event.preventDefault();const form=event.currentTarget;if(!form.reportValidity())return;const status=document.querySelector('#form-status');const data=new FormData(form);const payload={name:data.get('name'),email:data.get('email'),project:data.get('project'),details:data.get('details')};status.textContent='Sending your project details...';fetch(APPS_SCRIPT_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)}).then(()=>{status.textContent='Your request was sent. A co-founder will follow up to arrange your 20-minute strategy call. The browser cannot confirm the Apps Script saved it.'; }).catch(()=>{status.textContent='We could not connect to the form service. Please try again later.';});});
+    const APPS_SCRIPT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz9hM9keZ3mVxo3ucw8WNcToXcnzmJBT6TrUcRTENfPPELBT8dth3YLVoct-PEixIqr/exec';
+    document.querySelector('#project-form').addEventListener('submit',event=>{event.preventDefault();const form=event.currentTarget;if(!form.reportValidity())return;const status=document.querySelector('#form-status');const data=new FormData(form);const payload={name:data.get('name'),email:data.get('email'),project:data.get('project'),details:data.get('details')};status.textContent='Sending your project details...';fetch(APPS_SCRIPT_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)}).then(()=>{status.textContent='Thank you! Your request has been sent. A co-founder will follow up to arrange your 20-minute strategy call.';form.reset();}).catch(()=>{status.textContent='We could not connect to the form service. Please try again later.';});});
   </script>
 </body>
 </html>
