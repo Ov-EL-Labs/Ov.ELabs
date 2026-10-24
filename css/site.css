@@ -301,8 +301,8 @@ footer img { display: block; width: 7rem; height: 2rem; object-fit: cover; objec
   .hero-fallback { transition: none; }
 }
 
-/* Enabled by the preloader module; if JavaScript fails, the page stays usable. */
-.ovel-preloader { position: fixed; z-index: 100; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fbf9f5; visibility: hidden; opacity: 0; pointer-events: none; }
+/* Enabled by the preloader module; if JavaScript fails, safety timeout handles dismissal. */
+.ovel-preloader { position: fixed; z-index: 9999; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fbf9f5; visibility: visible; opacity: 1; pointer-events: auto; }
 .preloader-logo { position: relative; display: inline-flex; align-items: baseline; padding: 2rem 1rem; color: #111; font-family: Fredoka, sans-serif; font-weight: 600; line-height: .82; white-space: nowrap; }
 .preloader-char { display: inline-block; transform-origin: 50% 100%; will-change: transform, opacity; }
 .preloader-o, .preloader-e, .preloader-l { font-size: clamp(5.5rem, 15vw, 11.5rem); }

@@ -3,7 +3,11 @@ import { gsap } from 'gsap';
 const preloader = document.querySelector('#ovel-preloader');
 const dot = document.querySelector('#preloader-dot');
 
-if (preloader && dot && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+if (preloader && dot) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    preloader.style.display = 'none';
+    preloader.setAttribute('aria-hidden', 'true');
+  } else {
   const logo = preloader.querySelector('.preloader-logo');
   const letters = {
     o: document.querySelector('#preloader-o'),
@@ -160,6 +164,23 @@ if (preloader && dot && !window.matchMedia('(prefers-reduced-motion: reduce)').m
     finishWithPortal(timeline);
   }
 
-  if (nextMode === 'orbit') playOrbit();
-  else playTrampoline();
+    if (nextMode === 'orbit') playOrbit();
+    else playTrampoline();
+
+    // Safety fallback: if anything stalls or fonts take too long, guarantee dismiss after 4s
+    setTimeout(() => {
+      if (preloader && preloader.style.visibility !== 'hidden' && preloader.style.display !== 'none') {
+        preloader.style.transition = 'opacity 0.4s ease';
+        preloader.style.opacity = '0';
+        preloader.style.pointerEvents = 'none';
+        setTimeout(() => {
+          preloader.style.visibility = 'hidden';
+          preloader.style.display = 'none';
+          document.body.style.overflow = previousOverflow;
+          pageRegions.forEach((region, index) => { region.inert = previouslyInert[index]; });
+        }, 400);
+      }
+    }, 4200);
+  }
 }
+

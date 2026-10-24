@@ -30,10 +30,19 @@
       fontFamily: { headline:['Satoshi','sans-serif'], body:['Satoshi','sans-serif'], mono:['Space Mono','monospace'] }
     } } };
   </script>
-  <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/","gsap":"./node_modules/gsap/index.js","gsap/ScrollTrigger":"./node_modules/gsap/ScrollTrigger.js"}}</script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js",
+      "gsap/ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger.js"
+    }
+  }
+  </script>
+  <script type="module" src="./js/preloader.js"></script>
   <script type="module" src="./js/hero.js"></script>
   <script type="module" src="./js/pricing.js"></script>
-  <script type="module" src="./js/preloader.js"></script>
 </head>
 <body class="bg-canvas-cream text-pitch-black antialiased">
   <div class="ovel-preloader" id="ovel-preloader" role="status" aria-label="Loading Ov.EL Labs" aria-hidden="true">
