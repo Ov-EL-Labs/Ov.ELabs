@@ -202,16 +202,25 @@ footer img { display: block; width: 7rem; height: 2rem; object-fit: cover; objec
 .site-footer-wordmark {
   display: block;
   width: 100%;
-  aspect-ratio: 5 / 1;
-  margin-block: 1.25rem .75rem;
+  max-width: 50rem;
+  aspect-ratio: 3.5 / 1;
+  margin-block: 2rem 1.25rem;
+  margin-inline: auto;
   overflow: hidden;
+  text-decoration: none;
 }
 .site-footer-wordmark img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transform: scaleX(1.65);
+  transform: none;
+  opacity: 0.92;
+  transition: opacity .25s ease;
+}
+.site-footer-wordmark:hover img {
+  opacity: 1;
 }
 .site-footer-bottom {
   display: flex !important;
@@ -253,7 +262,7 @@ footer img { display: block; width: 7rem; height: 2rem; object-fit: cover; objec
   .site-footer-top { grid-template-columns: minmax(0,1fr); gap: 2.5rem !important; padding-bottom: 2rem; }
   .site-footer-intro h2 { margin-top: 1rem; }
   .site-footer-links { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .site-footer-wordmark { aspect-ratio: 3.5 / 1; margin-block: 1rem .5rem; }
+  .site-footer-wordmark { aspect-ratio: 3.5 / 1; max-width: 100%; margin-block: 1.25rem .75rem; }
   .site-footer-bottom { flex-wrap: wrap; justify-content: space-between; }
   .site-footer-bottom > span:nth-child(2) { order: 1; width: 100%; }
 }
