@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ov.EL LABS — Creative GSAP Preloader</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Fredoka & Nunito for exact rounded geometric logo letterforms + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- GSAP Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ovelblack: '#050507',
+            ovelpurple: '#5E17EB',
+            ovelpurplelight: '#7B3FF2',
+            labgray: '#F4F4F8'
+          },
+          fontFamily: {
+            logo: ['"Fredoka"', '"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #FFFFFF;
+      color: #050507;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Subtle architectural lab grid */
+    .lab-grid-bg {
+      background-size: 48px 48px;
+      background-image: 
+        linear-gradient(to right, rgba(94, 23, 235, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(94, 23, 235, 0.04) 1px, transparent 1px);
+    }
+
+    /* Exact Ov.EL LABS Logo Typography Styling */
+    .logo-stage {
+      position: relative;
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .logo-char {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      color: #050507;
+      display: inline-block;
+      line-height: 0.82;
+      transform-origin: 50% 100%;
+      will-change: transform, opacity;
+      position: relative;
+    }
+
+    /* Individual letter tuning to match uploaded image proportions */
+    .char-O {
+      font-size: clamp(5.5rem, 15vw, 11.5rem);
+      letter-spacing: -0.03em;
+    }
+
+    .char-v {
+      font-size: clamp(4.6rem, 12.6vw, 9.6rem);
+      margin-left: -0.02em;
+      transform-origin: 50% 90%;
+    }
+
+    /* The Spacer where the dot lives at rest */
+    .dot-home-slot {
+      display: inline-block;
+      width: clamp(1.35rem, 3.6vw, 2.75rem);
+      height: clamp(1.35rem, 3.6vw, 2.75rem);
+      margin: 0 clamp(0.15rem, 0.5vw, 0.45rem);
+      position: relative;
+      vertical-align: baseline;
+    }
+
+    /* The Active Bouncing Purple Dot */
+    #the-dot {
+      position: absolute;
+      left: 0;
+      bottom: clamp(0.05rem, 0.25vw, 0.2rem);
+      width: 100%;
+      height: 100%;
+      background-color: #5E17EB;
+      border-radius: 9999px;
+      transform-origin: 50% 50%;
+      will-change: transform, width, height, box-shadow;
+      cursor: pointer;
+      z-index: 30;
+      box-shadow: 0 8px 25px -4px rgba(94, 23, 235, 0.55);
+    }
+
+    /* Cute expressive eyes inside the dot during playful phases */
+    .dot-eyes {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .dot-eye {
+      width: 18%;
+      height: 26%;
+      background: #FFFFFF;
+      border-radius: 999px;
+    }
+
+    .char-E {
+      font-size: clamp(5.5rem, 15vw, 11.5rem);
+      letter-spacing: -0.02em;
+    }
+
+    .char-L-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: baseline;
+      margin-left: -0.01em;
+    }
+
+    .char-L {
+      font-size: clamp(5.5rem, 15vw, 11.5rem);
+    }
+
+    /* Vertical stacked "LABS" nestled inside the L */
+    .labs-vertical {
+      position: absolute;
+      /* Positioned right inside the vertical stem and above the horizontal foot of L */
+      left: 39%;
+      bottom: 23%;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      justify-content: space-between;
+      height: 62%;
+      pointer-events: none;
+    }
+
+    .labs-letter {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.6rem, 1.55vw, 1.18rem);
+      line-height: 1;
+      color: #5E17EB;
+      transform: rotate(-90deg);
+      display: block;
+      will-change: transform, opacity;
+      letter-spacing: 0.04em;
+    }
+
+    /* Particle sparks container */
+    .spark-particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 999px;
+      z-index: 25;
+    }
+
+    /* Floor shadow under the bouncing dot */
+    #dot-shadow {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      height: 7px;
+      background: radial-gradient(ellipse at center, rgba(94, 23, 235, 0.28) 0%, transparent 75%);
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body class="lab-grid-bg h-screen w-screen flex flex-col justify-between relative overflow-hidden">
+
+  <!-- ======================================================== -->
+  <!-- UNDERLYING WEBSITE PREVIEW (REVEALED ON PORTAL EXIT)     -->
+  <!-- ======================================================== -->
+  <div id="site-preview-layer" class="fixed inset-0 z-10 bg-[#07070B] text-white flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none">
+    <div class="max-w-2xl text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 font-mono text-xs text-purple-300">
+        <span class="w-2 h-2 rounded-full bg-ovelpurple animate-ping"></span>
+        <span>PORTAL TRANSITION COMPLETE — WEBSITE UNLOCKED</span>
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-bold tracking-tight">
+        Welcome to <span class="text-ovelpurplelight">Ov.EL LABS</span>
+      </h1>
+      <p class="text-white/60 text-base sm:text-lg max-w-lg mx-auto">
+        The purple dot expanded into a full-viewport iris reveal to seamlessly transition from your preloader into your main site experience.
+      </p>
+      <button id="back-to-loader-btn" class="px-6 py-3.5 rounded-2xl bg-ovelpurple hover:bg-ovelpurplelight text-white font-mono text-xs uppercase tracking-widest font-semibold transition-all shadow-lg shadow-ovelpurple/30">
+        ← Reverse Portal &amp; Return to Loader
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- TOP TELEMETRY BAR                                        -->
+  <!-- ======================================================== -->
+  <header class="relative z-30 w-full max-w-7xl mx-auto px-6 pt-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-2.5 rounded-full bg-ovelpurple animate-pulse"></div>
+      <span class="font-mono text-xs uppercase tracking-widest text-ovelblack/60 font-medium">
+        OV.EL LABS // PRELOADER ENGINE
+      </span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span id="status-pill" class="hidden sm:inline-block px-3 py-1 rounded-full bg-labgray font-mono text-[11px] text-ovelpurple font-medium">
+        PHASE: INITIALIZING DOT...
+      </span>
+      <button id="open-code-modal-btn" class="px-4 py-2 rounded-xl bg-ovelblack hover:bg-ovelpurple text-white font-mono text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        <span>Copy Drop-In Loader Code</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- CENTER STAGE: EXACT Ov.EL LABS LOGO & ANIMATING DOT      -->
+  <!-- ======================================================== -->
+  <main class="relative z-20 flex-1 flex flex-col items-center justify-center px-4">
+
+    <div id="logo-container" class="logo-stage select-none py-12 px-8">
+      <!-- Particle burst layer -->
+      <div id="particles-layer" class="absolute inset-0 pointer-events-none overflow-visible"></div>
+
+      <!-- 'O' -->
+      <span id="char-O" class="logo-char char-O">O</span>
+
+      <!-- 'v' (Acts as a trampoline in Mode 1!) -->
+      <span id="char-v" class="logo-char char-v">v</span>
+
+      <!-- '.' The Purple Dot Home Slot -->
+      <span id="dot-slot" class="dot-home-slot">
+        <div id="dot-shadow"></div>
+        <div id="the-dot" title="Click or hover me!">
+          <div class="dot-eyes" id="dot-eyes">
+            <span class="dot-eye"></span>
+            <span class="dot-eye"></span>
+          </div>
+        </div>
+      </span>
+
+      <!-- 'E' -->
+      <span id="char-E" class="logo-char char-E">E</span>
+
+      <!-- 'L' + Vertical 'LABS' -->
+      <span id="char-L-group" class="char-L-wrap">
+        <span id="char-L" class="logo-char char-L">L</span>
+        <span class="labs-vertical" id="labs-stack">
+          <span class="labs-letter" data-idx="0">L</span>
+          <span class="labs-letter" data-idx="1">A</span>
+          <span class="labs-letter" data-idx="2">B</span>
+          <span class="labs-letter" data-idx="3">S</span>
+        </span>
+      </span>
+    </div>
+
+    <!-- Progress Readout & Interactive Hint -->
+    <div class="mt-6 flex flex-col items-center gap-2">
+      <div class="w-48 sm:w-64 h-1.5 bg-labgray rounded-full overflow-hidden p-0.5">
+        <div id="loader-bar" class="h-full w-0 bg-ovelpurple rounded-full"></div>
+      </div>
+      <div class="flex items-center gap-3 font-mono text-xs text-ovelblack/50">
+        <span id="progress-percent" class="text-ovelblack font-semibold">0%</span>
+        <span>·</span>
+        <span id="interactive-hint">Click the purple dot anytime for a bounce!</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- BOTTOM PLAYGROUND BAR: SWITCH ANIMATION STYLES           -->
+  <!-- ======================================================== -->
+  <footer class="relative z-30 w-full max-w-5xl mx-auto px-6 pb-7">
+    <div class="bg-labgray/90 backdrop-blur-md border border-black/5 rounded-2xl p-2.5 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div class="flex items-center gap-2 px-2">
+        <span class="font-mono text-[11px] uppercase tracking-wider text-ovelblack/50">Choreography Style:</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button data-mode="trampoline" class="mode-btn active px-3.5 py-2 rounded-xl font-mono text-xs font-medium transition-all bg-ovelblack text-white shadow-sm">
+          1. Trampoline &amp; Spark
+        </button>
+        <button data-mode="orbit" class="mode-btn px-3.5 py-2 rounded-xl font-mono text-xs font-medium transition-all text-ovelblack/70 hover:text-ovelblack hover:bg-white/60">
+          2. Magnetic Orbit
+        </button>
+        <button data-mode="portal" class="mode-btn px-3.5 py-2 rounded-xl font-mono text-xs font-medium transition-all text-ovelpurple hover:bg-ovelpurple/10">
+          3. Dot Portal Reveal ↗
+        </button>
+      </div>
+
+      <button id="replay-btn" class="px-4 py-2 rounded-xl bg-ovelpurple hover:bg-ovelpurplelight text-white font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        <span>Replay</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: STANDALONE DROP-IN CODE FOR USER'S WEBSITE        -->
+  <!-- ======================================================== -->
+  <div id="code-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div id="code-modal-box" class="bg-[#0B0B10] text-white border border-white/15 rounded-3xl max-w-3xl w-full max-h-[86vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+        <div>
+          <span class="font-mono text-[10px] uppercase tracking-widest text-ovelpurplelight">// READY FOR PRODUCTION</span>
+          <h3 class="text-base font-semibold text-white">Drop-In Ov.EL LABS Preloader Snippet (HTML + CSS + GSAP)</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="copy-snippet-btn" class="px-4 py-1.5 rounded-xl bg-ovelpurple hover:bg-ovelpurplelight text-white font-mono text-xs uppercase tracking-wider font-semibold transition-colors">
+            Copy Code
+          </button>
+          <button id="close-code-modal-btn" class="w-8 h-8 rounded-full border border-white/15 hover:border-white flex items-center justify-center font-mono text-xs">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div class="p-5 overflow-y-auto font-mono text-xs leading-relaxed text-purple-200 select-all bg-[#07070A]">
+<pre id="raw-code-snippet" class="whitespace-pre-wrap break-words">&lt;!-- 1. Include Google Font (Fredoka) &amp; GSAP in your &lt;head&gt; --&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&amp;family=Plus+Jakarta+Sans:wght@800&amp;display=swap" rel="stylesheet"&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Ov.EL LABS Preloader Overlay --&gt;
+&lt;div id="ovel-preloader" style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;"&gt;
+  &lt;div style="position:relative;display:inline-flex;align-items:baseline;font-family:'Fredoka',sans-serif;font-weight:600;color:#050507;line-height:0.82;"&gt;
+    &lt;span class="ov-char" id="ov-O" style="font-size:clamp(4.5rem,12vw,9rem);display:inline-block;transform-origin:50% 100%;"&gt;O&lt;/span&gt;
+    &lt;span class="ov-char" id="ov-v" style="font-size:clamp(3.8rem,10vw,7.5rem);display:inline-block;transform-origin:50% 90%;"&gt;v&lt;/span&gt;
+    &lt;span style="display:inline-block;width:clamp(1.1rem,3vw,2.2rem);height:clamp(1.1rem,3vw,2.2rem);margin:0 0.35rem;position:relative;"&gt;
+      &lt;span id="ov-dot" style="position:absolute;inset:0;background:#5E17EB;border-radius:999px;display:block;"&gt;&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="ov-char" id="ov-E" style="font-size:clamp(4.5rem,12vw,9rem);display:inline-block;transform-origin:50% 100%;"&gt;E&lt;/span&gt;
+    &lt;span style="position:relative;display:inline-flex;align-items:baseline;"&gt;
+      &lt;span class="ov-char" id="ov-L" style="font-size:clamp(4.5rem,12vw,9rem);display:inline-block;transform-origin:50% 100%;"&gt;L&lt;/span&gt;
+      &lt;span style="position:absolute;left:39%;bottom:23%;height:62%;display:flex;flex-direction:column-reverse;justify-content:space-between;"&gt;
+        &lt;span class="ov-labs" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:clamp(0.55rem,1.3vw,0.95rem);color:#5E17EB;transform:rotate(-90deg);"&gt;L&lt;/span&gt;
+        &lt;span class="ov-labs" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:clamp(0.55rem,1.3vw,0.95rem);color:#5E17EB;transform:rotate(-90deg);"&gt;A&lt;/span&gt;
+        &lt;span class="ov-labs" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:clamp(0.55rem,1.3vw,0.95rem);color:#5E17EB;transform:rotate(-90deg);"&gt;B&lt;/span&gt;
+        &lt;span class="ov-labs" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:clamp(0.55rem,1.3vw,0.95rem);color:#5E17EB;transform:rotate(-90deg);"&gt;S&lt;/span&gt;
+      &lt;/span&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  window.addEventListener('DOMContentLoaded', () =&gt; {
+    const tl = gsap.timeline();
+    gsap.set('.ov-char', { y: 80, opacity: 0, scaleY: 0.5 });
+    gsap.set('.ov-labs', { scale: 0, opacity: 0 });
+    gsap.set('#ov-dot', { y: -260, scale: 0 });
+
+    // 1. Purple dot drops in &amp; bounces across letters
+    tl.to('#ov-dot', { y: 0, scale: 1, duration: 0.55, ease: 'bounce.out' })
+      .to('#ov-dot', { x: -135, y: -95, duration: 0.28, ease: 'power2.out' })
+      .to('#ov-dot', { x: -70, y: -15, scaleX: 1.3, scaleY: 0.7, duration: 0.22, ease: 'power2.in' })
+      // Wake up O &amp; v on trampoline impact
+      .to(['#ov-O', '#ov-v'], { y: 0, opacity: 1, scaleY: 1, duration: 0.65, stagger: 0.08, ease: 'elastic.out(1.2, 0.4)' }, '-=0.1')
+      // Vault over E to L
+      .to('#ov-dot', { x: 85, y: -110, scaleX: 0.9, scaleY: 1.15, duration: 0.3, ease: 'power2.out' })
+      .to(['#ov-E', '#ov-L'], { y: 0, opacity: 1, scaleY: 1, duration: 0.65, stagger: 0.08, ease: 'elastic.out(1.2, 0.4)' }, '-=0.15')
+      // Pop vertical LABS letters &amp; snap dot home
+      .to('.ov-labs', { scale: 1, opacity: 1, rotation: -90, duration: 0.4, stagger: 0.06, ease: 'back.out(2.5)' })
+      .to('#ov-dot', { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 0.5, ease: 'elastic.out(1, 0.4)' }, '-=0.25')
+      // Expand dot into portal &amp; fade out preloader
+      .to('#ov-dot', { scale: 85, duration: 0.65, delay: 0.35, ease: 'power4.in' })
+      .to('#ovel-preloader', { opacity: 0, pointerEvents: 'none', duration: 0.4 });
+  });
+&lt;/script&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- GSAP CHOREOGRAPHY ENGINE                                 -->
+  <!-- ======================================================== -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const charO = document.getElementById('char-O');
+      const charV = document.getElementById('char-v');
+      const charE = document.getElementById('char-E');
+      const charL = document.getElementById('char-L');
+      const allMainChars = [charO, charV, charE, charL];
+      const labsLetters = gsap.utils.toArray('.labs-letter');
+
+      const dot = document.getElementById('the-dot');
+      const dotEyes = document.getElementById('dot-eyes');
+      const dotShadow = document.getElementById('dot-shadow');
+      const particlesLayer = document.getElementById('particles-layer');
+
+      const loaderBar = document.getElementById('loader-bar');
+      const progressPercent = document.getElementById('progress-percent');
+      const statusPill = document.getElementById('status-pill');
+      const sitePreviewLayer = document.getElementById('site-preview-layer');
+
+      let activeTimeline = null;
+      let currentMode = 'trampoline';
+
+      // Helper: Spawn purple/black spark bursts at (x, y) relative to the dot's home slot
+      function spawnSparks(offsetX = 0, offsetY = 0, count = 10, color = '#5E17EB') {
+        const slotRect = document.getElementById('dot-slot').getBoundingClientRect();
+        const stageRect = document.getElementById('logo-container').getBoundingClientRect();
+
+        const originX = (slotRect.left - stageRect.left) + slotRect.width / 2 + offsetX;
+        const originY = (slotRect.top - stageRect.top) + slotRect.height / 2 + offsetY;
+
+        for (let i = 0; i < count; i++) {
+          const spark = document.createElement('div');
+          spark.className = 'spark-particle';
+          const size = gsap.utils.random(5, 11);
+          spark.style.width = `${size}px`;
+          spark.style.height = `${size}px`;
+          spark.style.backgroundColor = i % 3 === 0 ? '#050507' : color;
+          spark.style.left = `${originX}px`;
+          spark.style.top = `${originY}px`;
+          particlesLayer.appendChild(spark);
+
+          const angle = (Math.PI * 2 * i) / count + gsap.utils.random(-0.25, 0.25);
+          const distance = gsap.utils.random(35, 95);
+
+          gsap.to(spark, {
+            x: Math.cos(angle) * distance,
+            y: Math.sin(angle) * distance,
+            scale: 0,
+            opacity: 0,
+            duration: gsap.utils.random(0.45, 0.75),
+            ease: 'power3.out',
+            onComplete: () => spark.remove()
+          });
+        }
+      }
+
+      // Helper: Calculate relative pixel offsets from the dot slot to other letters so the bounce hits accurately on any screen size
+      function getRelativeOffsets() {
+        const slotRect = document.getElementById('dot-slot').getBoundingClientRect();
+        const oRect = charO.getBoundingClientRect();
+        const vRect = charV.getBoundingClientRect();
+        const eRect = charE.getBoundingClientRect();
+        const lRect = charL.getBoundingClientRect();
+
+        const slotCenter = slotRect.left + slotRect.width / 2;
+
+        return {
+          toO: (oRect.left + oRect.width / 2) - slotCenter,
+          toV: (vRect.left + vRect.width / 2) - slotCenter,
+          toE: (eRect.left + eRect.width / 2) - slotCenter,
+          toLStem: (lRect.left + lRect.width * 0.28) - slotCenter,
+          toLFoot: (lRect.left + lRect.width * 0.68) - slotCenter,
+          letterHeight: oRect.height
+        };
+      }
+
+      // Reset everything cleanly before starting a choreography
+      function resetStage() {
+        if (activeTimeline) activeTimeline.kill();
+        gsap.killTweensOf([dot, dotEyes, dotShadow, allMainChars, labsLetters, loaderBar]);
+
+        gsap.set(sitePreviewLayer, { opacity: 0, pointerEvents: 'none' });
+        gsap.set([ allMainChars, labsLetters ], { clearProps: 'all' });
+        gsap.set(dot, { x: 0, y: 0, scale: 1, scaleX: 1, scaleY: 1, rotation: 0 });
+        gsap.set(dotEyes, { opacity: 0, x: 0, y: 0 });
+        gsap.set(dotShadow, { opacity: 0, scale: 1, x: 0 });
+        gsap.set(loaderBar, { width: '0%' });
+        progressPercent.textContent = '0%';
+      }
+
+      // Bind progress bar to timeline progress
+      function bindProgress(tl) {
+        tl.eventCallback('onUpdate', () => {
+          const p = Math.round(tl.progress() * 100);
+          loaderBar.style.width = `${p}%`;
+          progressPercent.textContent = `${p}%`;
+        });
+      }
+
+      // ========================================================
+      // MODE 1: TRAMPOLINE & SPARK STORY (DEFAULT)
+      // ========================================================
+      function playTrampolineStory() {
+        resetStage();
+        const pos = getRelativeOffsets();
+
+        // Hide letters initially below baseline
+        gsap.set(allMainChars, { y: 90, opacity: 0, scaleY: 0.4, scaleX: 1.25 });
+        gsap.set(labsLetters, { scale: 0, opacity: 0, rotation: -90 });
+        gsap.set(dot, { y: -280, scaleX: 0.75, scaleY: 1.35, opacity: 1 });
+        gsap.set(dotShadow, { opacity: 0, scale: 0.2 });
+
+        const tl = gsap.timeline();
+        activeTimeline = tl;
+        bindProgress(tl);
+
+        // STEP 1: The Curious Purple Dot drops from the sky & squashes on impact
+        tl.call(() => { statusPill.textContent = 'PHASE 01 // CURIOUS DOT DROP'; })
+          .to(dot, { y: 0, scaleX: 1, scaleY: 1, duration: 0.42, ease: 'power2.in' })
+          .to(dotShadow, { opacity: 1, scale: 1.3, duration: 0.42, ease: 'power2.in' }, '<')
+          .to(dot, { scaleX: 1.55, scaleY: 0.52, y: 6, duration: 0.11, ease: 'power2.out', onStart: () => spawnSparks(0, 5, 8) })
+          .to(dot, { scaleX: 0.85, scaleY: 1.2, y: -48, duration: 0.24, ease: 'power2.out' })
+          .to(dot, { scaleX: 1, scaleY: 1, y: 0, duration: 0.22, ease: 'bounce.out' })
+
+          // Dot blinks its cute eyes & looks left/right
+          .to(dotEyes, { opacity: 1, duration: 0.12 })
+          .to(dotEyes, { x: -5, duration: 0.16, ease: 'power2.out' })
+          .to(dotEyes, { x: 5, duration: 0.2, ease: 'power2.inOut' })
+          .to(dotEyes, { x: 0, duration: 0.12 })
+
+          // STEP 2: Dot leaps left to knock 'O' up from underground!
+          .call(() => { statusPill.textContent = 'PHASE 02 // AWAKENING "O" & "v" TRAMPOLINE'; })
+          .to(dot, { x: pos.toO * 0.5, y: -pos.letterHeight * 0.85, scaleX: 0.9, scaleY: 1.15, duration: 0.22, ease: 'power2.out' })
+          .to(dotShadow, { x: pos.toO, scale: 0.6, duration: 0.4 }, '<')
+          .to(dot, { x: pos.toO, y: -pos.letterHeight * 0.45, scaleX: 1.35, scaleY: 0.65, duration: 0.18, ease: 'power2.in' })
+          .call(() => spawnSparks(pos.toO, -pos.letterHeight * 0.45, 10))
+          // 'O' springs up with elastic jelly physics!
+          .to(charO, { y: 0, opacity: 1, scaleY: 1, scaleX: 1, duration: 0.75, ease: 'elastic.out(1.25, 0.38)' }, '-=0.05')
+
+          // STEP 3: Dot arcs from 'O' right into the valley of 'v' like a trampoline!
+          .to(dot, { x: (pos.toO + pos.toV) / 2, y: -pos.letterHeight * 1.05, scaleX: 0.9, scaleY: 1.1, duration: 0.22, ease: 'power2.out' }, '-=0.55')
+          .to(dot, { x: pos.toV, y: -pos.letterHeight * 0.28, scaleX: 1.45, scaleY: 0.55, duration: 0.2, ease: 'power2.in' }, '-=0.33')
+          .to(dotShadow, { x: pos.toV, scale: 1.1, duration: 0.2 }, '<')
+          // 'v' pops up and stretches wide like a rubber V-trampoline!
+          .to(charV, { y: 0, opacity: 1, scaleX: 1.32, scaleY: 0.68, duration: 0.16, ease: 'power2.out', onStart: () => spawnSparks(pos.toV, -20, 8) }, '-=0.15')
+          .to(charV, { scaleX: 1, scaleY: 1, duration: 0.7, ease: 'elastic.out(1.4, 0.35)' })
+
+          // STEP 4: Trampoline 'v' launches the dot high over 'E' onto 'L'!
+          .call(() => { statusPill.textContent = 'PHASE 03 // IGNITING VERTICAL "LABS"'; }, null, '-=0.55')
+          .to(dot, { x: pos.toE, y: -pos.letterHeight * 1.15, scaleX: 0.85, scaleY: 1.2, duration: 0.26, ease: 'power2.out' }, '-=0.6')
+          // As dot passes over 'E', 'E' pops up enthusiastically
+          .to(charE, { y: 0, opacity: 1, scaleY: 1, scaleX: 1, duration: 0.7, ease: 'elastic.out(1.2, 0.4)' }, '-=0.18')
+          // Dot lands on the foot of 'L'
+          .to(dot, { x: pos.toLFoot, y: -12, scaleX: 1.4, scaleY: 0.6, duration: 0.22, ease: 'power2.in' }, '-=0.48')
+          .to(charL, { y: 0, opacity: 1, scaleY: 1, scaleX: 1, duration: 0.7, ease: 'elastic.out(1.2, 0.4)', onStart: () => spawnSparks(pos.toLFoot, -10, 10) }, '-=0.28')
+
+          // STEP 5: Dot zips vertically up the inside of 'L', popping out L-A-B-S one by one!
+          .to(dot, {
+            x: pos.toLStem + 22,
+            y: -pos.letterHeight * 0.78,
+            scaleX: 0.75,
+            scaleY: 1.3,
+            duration: 0.36,
+            ease: 'power3.out'
+          }, '-=0.35')
+          .to(labsLetters, {
+            scale: 1,
+            opacity: 1,
+            rotation: -90,
+            duration: 0.42,
+            stagger: 0.065,
+            ease: 'back.out(2.6)'
+          }, '-=0.32')
+
+          // STEP 6: Dot backflips triumphantly into its home slot between 'v' and 'E'!
+          .to(dotEyes, { opacity: 0, duration: 0.15 }, '-=0.1')
+          .to(dot, {
+            x: 0,
+            y: -pos.letterHeight * 0.65,
+            scaleX: 1,
+            scaleY: 1,
+            duration: 0.24,
+            ease: 'power2.out'
+          }, '-=0.15')
+          .to(dotShadow, { x: 0, scale: 1, duration: 0.35 }, '<')
+          .to(dot, {
+            y: 0,
+            scaleX: 1.35,
+            scaleY: 0.68,
+            duration: 0.18,
+            ease: 'power3.in',
+            onComplete: () => spawnSparks(0, 0, 14)
+          })
+          .to(dot, {
+            scaleX: 1,
+            scaleY: 1,
+            duration: 0.65,
+            ease: 'elastic.out(1.3, 0.35)'
+          })
+          // Subtle final wave across all letters when locked in
+          .to([charO, charV, charE, charL], {
+            y: -10,
+            duration: 0.16,
+            stagger: 0.04,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.out'
+          }, '-=0.5')
+          .call(() => {
+            statusPill.textContent = 'READY // 100% — CLICK THE DOT TO PLAY!';
+          });
+      }
+
+      // ========================================================
+      // MODE 2: MAGNETIC ORBIT & GRAVITY SLAM
+      // ========================================================
+      function playOrbitStory() {
+        resetStage();
+        const pos = getRelativeOffsets();
+
+        // Scatter letters in zero-gravity around the stage
+        gsap.set(charO, { x: -90, y: -70, rotation: -18, opacity: 0, scale: 0.7 });
+        gsap.set(charV, { x: -30, y: 85, rotation: 14, opacity: 0, scale: 0.7 });
+        gsap.set(charE, { x: 50, y: -80, rotation: 16, opacity: 0, scale: 0.7 });
+        gsap.set(charL, { x: 110, y: 70, rotation: -15, opacity: 0, scale: 0.7 });
+        gsap.set(labsLetters, { scale: 0, opacity: 0, x: 20 });
+        gsap.set(dot, { scale: 0 });
+
+        const tl = gsap.timeline();
+        activeTimeline = tl;
+        bindProgress(tl);
+
+        statusPill.textContent = 'PHASE 01 // ZERO-G MAGNETIC ORBIT';
+
+        // Letters float in while the purple dot orbits around the entire logo
+        tl.to(dot, { scale: 1.35, duration: 0.35, ease: 'back.out(2)' })
+          .to(allMainChars, { opacity: 1, scale: 1, duration: 0.45, stagger: 0.06, ease: 'power2.out' }, '<')
+          // Orbit loop
+          .to(dot, { x: pos.toO - 30, y: -65, scale: 0.9, duration: 0.28, ease: 'sine.inOut' })
+          .to(dot, { x: 0, y: -120, scale: 1.4, duration: 0.28, ease: 'sine.inOut' })
+          .to(dot, { x: pos.toLFoot + 30, y: -40, scale: 0.95, duration: 0.28, ease: 'sine.inOut' })
+          .to(dot, { x: 0, y: 0, scale: 1.8, duration: 0.28, ease: 'power3.in' })
+          // Magnetic snap! All letters slam into alignment
+          .call(() => {
+            statusPill.textContent = 'PHASE 02 // MAGNETIC LOCK';
+            spawnSparks(0, 0, 18);
+          })
+          .to(dot, { scale: 1, duration: 0.6, ease: 'elastic.out(1.4, 0.3)' })
+          .to(allMainChars, {
+            x: 0,
+            y: 0,
+            rotation: 0,
+            duration: 0.75,
+            ease: 'elastic.out(1.15, 0.4)'
+          }, '<')
+          .to(labsLetters, {
+            scale: 1,
+            opacity: 1,
+            x: 0,
+            rotation: -90,
+            duration: 0.45,
+            stagger: 0.06,
+            ease: 'back.out(2.4)'
+          }, '-=0.5')
+          .call(() => {
+            statusPill.textContent = 'READY // MAGNETIC ALIGNMENT COMPLETE';
+          });
+      }
+
+      // ========================================================
+      // MODE 3: DOT PORTAL IRIS TRANSITION INTO WEBSITE
+      // ========================================================
+      function playPortalReveal() {
+        if (activeTimeline) activeTimeline.kill();
+        statusPill.textContent = 'PHASE 04 // PORTAL IRIS EXPANSION';
+
+        const tl = gsap.timeline();
+        activeTimeline = tl;
+
+        // Squish down in anticipation, then explode into a full-screen purple iris portal
+        tl.to(dot, { scaleX: 1.45, scaleY: 0.6, y: 6, duration: 0.2, ease: 'power2.out' })
+          .to([charO, charV, charE, charL, labsLetters], {
+            y: -15,
+            opacity: 0,
+            duration: 0.3,
+            stagger: 0.02,
+            ease: 'power2.in'
+          }, '<')
+          .to(dot, {
+            scale: 95,
+            duration: 0.68,
+            ease: 'power4.in'
+          })
+          .to(sitePreviewLayer, {
+            opacity: 1,
+            pointerEvents: 'auto',
+            duration: 0.4,
+            ease: 'power2.out'
+          }, '-=0.25');
+      }
+
+      // Return from portal preview back to loader
+      document.getElementById('back-to-loader-btn').addEventListener('click', () => {
+        const tl = gsap.timeline();
+        tl.to(sitePreviewLayer, { opacity: 0, pointerEvents: 'none', duration: 0.3 })
+          .to(dot, { scale: 1, scaleX: 1, scaleY: 1, y: 0, duration: 0.6, ease: 'expo.out' })
+          .to([charO, charV, charE, charL], {
+            y: 0,
+            opacity: 1,
+            duration: 0.55,
+            stagger: 0.05,
+            ease: 'elastic.out(1.1, 0.4)'
+          }, '-=0.35')
+          .to(labsLetters, {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.35,
+            stagger: 0.05
+          }, '-=0.4');
+      });
+
+      // ========================================================
+      // INTERACTIVE IDLE PLAYGROUND: CLICK OR HOVER THE DOT!
+      // ========================================================
+      dot.addEventListener('click', () => {
+        if (activeTimeline && activeTimeline.isActive()) return;
+        spawnSparks(0, 0, 14);
+
+        const jumpTl = gsap.timeline();
+        jumpTl
+          .to(dotEyes, { opacity: 1, duration: 0.1 })
+          .to(dot, { scaleX: 1.45, scaleY: 0.58, y: 5, duration: 0.1, ease: 'power2.out' }, '<')
+          .to(dot, { scaleX: 0.82, scaleY: 1.25, y: -95, rotation: 180, duration: 0.32, ease: 'power2.out' })
+          .to([charV, charE], { y: 8, scaleY: 0.92, duration: 0.12, yoyo: true, repeat: 1 }, '<')
+          .to(dot, { scaleX: 1.35, scaleY: 0.7, y: 0, rotation: 360, duration: 0.26, ease: 'power2.in' })
+          .to(dot, { scaleX: 1, scaleY: 1, duration: 0.55, ease: 'elastic.out(1.4, 0.35)' })
+          .to(dotEyes, { opacity: 0, duration: 0.2 }, '-=0.2');
+      });
+
+      // Individual letters also squish playfully when hovered
+      allMainChars.forEach((charEl) => {
+        charEl.addEventListener('mouseenter', () => {
+          if (activeTimeline && activeTimeline.isActive()) return;
+          gsap.fromTo(
+            charEl,
+            { scaleX: 1, scaleY: 1 },
+            { scaleX: 1.18, scaleY: 0.84, duration: 0.15, yoyo: true, repeat: 1, ease: 'power2.out' }
+          );
+        });
+      });
+
+      // ========================================================
+      // CONTROLS & COPY SNIPPET MODAL
+      // ========================================================
+      const modeButtons = document.querySelectorAll('.mode-btn');
+      modeButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.mode;
+          modeButtons.forEach((b) => {
+            b.classList.remove('bg-ovelblack', 'text-white', 'shadow-sm');
+            b.classList.add('text-ovelblack/70');
+          });
+          btn.classList.add('bg-ovelblack', 'text-white', 'shadow-sm');
+          btn.classList.remove('text-ovelblack/70');
+
+          if (mode === 'trampoline') {
+            currentMode = 'trampoline';
+            playTrampolineStory();
+          } else if (mode === 'orbit') {
+            currentMode = 'orbit';
+            playOrbitStory();
+          } else if (mode === 'portal') {
+            playPortalReveal();
+          }
+        });
+      });
+
+      document.getElementById('replay-btn').addEventListener('click', () => {
+        if (currentMode === 'orbit') playOrbitStory();
+        else playTrampolineStory();
+      });
+
+      // Modal Controls
+      const codeModal = document.getElementById('code-modal');
+      document.getElementById('open-code-modal-btn').addEventListener('click', () => {
+        codeModal.classList.remove('hidden');
+        codeModal.classList.add('flex');
+      });
+      document.getElementById('close-code-modal-btn').addEventListener('click', () => {
+        codeModal.classList.add('hidden');
+        codeModal.classList.remove('flex');
+      });
+      codeModal.addEventListener('click', (e) => {
+        if (e.target === codeModal) {
+          codeModal.classList.add('hidden');
+          codeModal.classList.remove('flex');
+        }
+      });
+
+      // Copy Code Button
+      const copyBtn = document.getElementById('copy-snippet-btn');
+      copyBtn.addEventListener('click', () => {
+        const rawCode = document.getElementById('raw-code-snippet').innerText;
+        const textarea = document.createElement('textarea');
+        textarea.value = rawCode;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy Code';
+        }, 2000);
+      });
+
+      // Start initial animation after fonts settle
+      setTimeout(() => {
+        playTrampolineStory();
+      }, 150);
+    });
+  </script>
+</body>
+</html>
+```
+
+### Creative Highlights Built Into Your `Ov.EL LABS` Preloader:
+1. **Exact Logo Geometry**: Matches your uploaded `Ov.EL LABS` image with rounded geometric bold letterforms (`O`, `v`, `E`, `L`), the vibrant purple dot (`#5E17EB`), and the vertical `L A B S` stacked inside the corner of the `L`.
+2. **Playful Dot Physics ("Trampoline & Spark")**:
+   * **Curious Drop**: The purple dot drops from the top of the screen with realistic squash-and-stretch (`scaleX`/`scaleY`), blinks its eyes, and looks around.
+   * **The `v` Trampoline**: It hops over to wake up `O`, lands right inside the valley of `v` (squashing `v` like a rubber trampoline), and launches across `E` onto the foot of `L`.
+   * **Vertical `LABS` Ignition**: The dot zips up the inside stem of `L`, popping out the vertical `L`, `A`, `B`, `S` letters one by one before backflipping into its resting spot between `v` and `E`.
+3. **3 Switchable Modes + Ready-to-Paste Snippet**: Use the bottom bar to test the **Trampoline & Spark**, **Magnetic Orbit**, or **Dot Portal Reveal** (where the purple dot expands full-screen to reveal your website), or click **Copy Drop-In Loader Code** in the top right to paste it directly into your site.

@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ov.EL LABS — Interactive Strategy Call & Animated Left Bar</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans, Instrument Serif, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- GSAP Core + ScrollTrigger + ScrollToPlugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ==========================================================
+       THEME DESIGN TOKENS (OBSIDIAN MINT / OVEL VIOLET / LIGHT)
+    ========================================================== */
+    :root,
+    [data-theme="mint"] {
+      --bg-page: #0B0F12;
+      --bg-elevated: #11171C;
+      --bg-card: #131B20;
+      --bg-input: #E8ECEF;
+      --text-input: #0F1418;
+      --text-primary: #F5F7F9;
+      --text-secondary: #9BA6B0;
+      --text-muted: #64707D;
+      --accent-primary: #A6F4B5;
+      --accent-secondary: #34D399;
+      --accent-glow: rgba(166, 244, 181, 0.22);
+      --accent-border: rgba(166, 244, 181, 0.45);
+      --hairline: rgba(255, 255, 255, 0.09);
+      --btn-text: #09120B;
+    }
+
+    [data-theme="violet"] {
+      --bg-page: #08070E;
+      --bg-elevated: #110F1D;
+      --bg-card: #151224;
+      --bg-input: #EFEFF6;
+      --text-input: #0E0C1A;
+      --text-primary: #F8F7FC;
+      --text-secondary: #A6A1C0;
+      --text-muted: #6C6685;
+      --accent-primary: #8B5CF6;
+      --accent-secondary: #C084FC;
+      --accent-glow: rgba(139, 92, 246, 0.28);
+      --accent-border: rgba(139, 92, 246, 0.55);
+      --hairline: rgba(255, 255, 255, 0.09);
+      --btn-text: #FFFFFF;
+    }
+
+    [data-theme="light"] {
+      --bg-page: #F8F7F3;
+      --bg-elevated: #FFFFFF;
+      --bg-card: #F2F0E8;
+      --bg-input: #FFFFFF;
+      --text-input: #111111;
+      --text-primary: #111111;
+      --text-secondary: #52514C;
+      --text-muted: #86847D;
+      --accent-primary: #5E17EB;
+      --accent-secondary: #7C3AED;
+      --accent-glow: rgba(94, 23, 235, 0.15);
+      --accent-border: rgba(94, 23, 235, 0.4);
+      --hairline: rgba(17, 17, 17, 0.11);
+      --btn-text: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* Ambient background grid & radial spotlight */
+    .ambient-grid {
+      background-size: 64px 64px;
+      background-image: 
+        linear-gradient(to right, var(--hairline) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--hairline) 1px, transparent 1px);
+    }
+
+    /* ==========================================================
+       LEFT BAR KINETIC SPINE RAIL
+    ========================================================== */
+    .kinetic-spine-track {
+      position: relative;
+      width: 2px;
+      background: var(--hairline);
+    }
+
+    .kinetic-spine-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, transparent, var(--accent-primary), var(--accent-secondary));
+      box-shadow: 0 0 14px var(--accent-primary);
+    }
+
+    .spine-node-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .spine-node-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--bg-page);
+      border: 2px solid var(--text-muted);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .spine-node-btn.active .spine-node-dot {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--accent-primary);
+      transform: scale(1.3);
+    }
+
+    /* ==========================================================
+       "TALK TO US" LASER PILL & HERO KINETIC TEXT
+    ========================================================== */
+    .talk-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--accent-border);
+      background: var(--accent-glow);
+      color: var(--accent-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .hero-word {
+      display: inline-block;
+      transform-origin: 50% 100%;
+      will-change: transform, opacity;
+    }
+
+    .highlight-phrase-wrap {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      color: var(--accent-primary);
+    }
+
+    .highlight-underline {
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-primary), transparent);
+      transform-origin: left center;
+    }
+
+    /* ==========================================================
+       8-LOGO INTERACTIVE SPOTLIGHT BENTO MATRIX
+    ========================================================== */
+    .logo-bento-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .logo-bento-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .logo-cell {
+      position: relative;
+      height: 74px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--hairline);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Mouse-tracking radial glow inside each logo cell */
+    .logo-cell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        140px circle at var(--cell-mx, 50%) var(--cell-my, 50%),
+        var(--accent-glow),
+        transparent 75%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .logo-cell:hover::before {
+      opacity: 1;
+    }
+
+    .logo-cell:hover {
+      border-color: var(--accent-border);
+    }
+
+    .logo-svg {
+      color: var(--text-secondary);
+      opacity: 0.78;
+      transition: color 0.3s ease, opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .logo-cell:hover .logo-svg {
+      color: var(--text-primary);
+      opacity: 1;
+      transform: translateY(-7px) scale(1.05);
+    }
+
+    .logo-kpi-badge {
+      position: absolute;
+      bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--accent-primary);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .logo-cell:hover .logo-kpi-badge {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==========================================================
+        TRAVELING PHOTON LINES FOR METRICS ROW
+    ========================================================== */
+    .laser-rule {
+      position: relative;
+      width: 100%;
+      height: 1px;
+      background: var(--hairline);
+      overflow: hidden;
+    }
+
+    .laser-photon {
+      position: absolute;
+      top: 0;
+      left: -25%;
+      width: 25%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+    }
+
+    /* ==========================================================
+       "WHAT TO EXPECT" INTERACTIVE DIAGNOSTIC CARDS
+    ========================================================== */
+    .expect-step-card {
+      position: relative;
+      border-radius: 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--hairline);
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .expect-step-card.active-step {
+      border-color: var(--accent-border);
+      background: var(--bg-card);
+      box-shadow: 0 20px 45px -20px var(--accent-glow);
+    }
+
+    .expect-step-body {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, margin-top 0.35s ease;
+    }
+
+    .expect-step-card.active-step .expect-step-body {
+      max-height: 220px;
+      opacity: 1;
+      margin-top: 14px;
+    }
+
+    /* ==========================================================
+       RIGHT COLUMN: STRATEGY CALL FORM CARD
+    ========================================================== */
+    .strategy-form-card {
+      position: relative;
+      background: var(--bg-elevated);
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      box-shadow: 0 30px 70px -25px rgba(0, 0, 0, 0.55);
+      overflow: hidden;
+    }
+
+    .form-input-field {
+      width: 100%;
+      background-color: var(--bg-input);
+      color: var(--text-input);
+      border: 1.5px solid transparent;
+      border-radius: 5px;
+      padding: 10px 13px;
+      font-size: 13.5px;
+      font-weight: 500;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    [data-theme="light"] .form-input-field {
+      border-color: rgba(17, 17, 17, 0.15);
+    }
+
+    .form-input-field::placeholder {
+      color: #88929B;
+    }
+
+    .form-input-field:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .cta-primary-btn {
+      background-color: var(--accent-primary);
+      color: var(--btn-text);
+      font-weight: 700;
+      border-radius: 5px;
+      transition: filter 0.2s ease, box-shadow 0.25s ease;
+    }
+
+    .cta-primary-btn:hover {
+      filter: brightness(1.06);
+      box-shadow: 0 10px 28px -6px var(--accent-glow);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-page);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-muted);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="ambient-grid min-h-screen" data-theme="mint">
+
+  <!-- ========================================================== -->
+  <!-- TOP NAVIGATION BAR (MATCHING REFERENCE SCREENSHOT + STUDIO)-->
+  <!-- ========================================================== -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-page)]/85 border-b border-[var(--hairline)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2 group">
+        <div class="font-sans font-extrabold text-xl tracking-tight leading-none flex items-baseline">
+          <span>Ov</span>
+          <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)] mx-0.5 inline-block group-hover:scale-150 transition-transform"></span>
+          <span>EL</span>
+          <span class="font-mono text-[9px] uppercase tracking-widest text-[var(--accent-primary)] ml-1.5 px-1.5 py-0.5 rounded bg-[var(--accent-glow)] border border-[var(--accent-border)]">
+            LABS
+          </span>
+        </div>
+      </a>
+
+      <!-- Center Navigation Links (From Reference Screenshot) -->
+      <nav class="hidden xl:flex items-center gap-7 text-xs font-medium text-[var(--text-secondary)]">
+        <a href="#sec-brief" class="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1">Services <span class="text-[10px]">▾</span></a>
+        <a href="#sec-proof" class="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1">Industries <span class="text-[10px]">▾</span></a>
+        <a href="#sec-proof" class="hover:text-[var(--text-primary)] transition-colors">Work</a>
+        <a href="#sec-expect" class="hover:text-[var(--text-primary)] transition-colors">How it Works</a>
+        <a href="#sec-impact" class="hover:text-[var(--text-primary)] transition-colors">Wall of Love</a>
+        <a href="#sec-expect" class="hover:text-[var(--text-primary)] transition-colors">About</a>
+      </nav>
+
+      <!-- Right Studio Controls: Theme Switcher + Replay + Get Code -->
+      <div class="flex items-center gap-2">
+        <!-- Theme Pill Switcher -->
+        <div class="hidden sm:flex items-center bg-[var(--bg-elevated)] p-1 rounded-lg border border-[var(--hairline)] font-mono text-[10px]">
+          <button data-set-theme="mint" class="theme-btn px-2.5 py-1 rounded bg-[var(--accent-primary)] text-[var(--btn-text)] font-bold transition-all">
+            Mint
+          </button>
+          <button data-set-theme="violet" class="theme-btn px-2.5 py-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">
+            Ov.EL Violet
+          </button>
+          <button data-set-theme="light" class="theme-btn px-2.5 py-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all">
+            Light
+          </button>
+        </div>
+
+        <!-- Replay Left Bar Entrance Button -->
+        <button id="replay-left-btn" class="px-3 py-2 rounded-md border border-[var(--hairline)] bg-[var(--bg-elevated)] hover:border-[var(--accent-primary)] font-mono text-[11px] text-[var(--text-primary)] transition-all" title="Replay Left Bar GSAP Choreography">
+          ↻ Replay Left Bar
+        </button>
+
+        <!-- Export Code CTA -->
+        <button id="open-code-modal" class="cta-primary-btn px-4 py-2 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5">
+          <span>&lt;/&gt; Get Code</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================== -->
+  <!-- MAIN SPLIT SECTION: ANIMATED LEFT BAR + STICKY FORM        -->
+  <!-- ========================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-8 pt-10 pb-28">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-14 items-start">
+
+      <!-- ====================================================== -->
+      <!-- LEFT COLUMN ("THE LEFT BAR" — 7 COLS ON DESKTOP)       -->
+      <!-- ====================================================== -->
+      <div class="lg:col-span-7 relative flex gap-5 sm:gap-7">
+
+        <!-- ---------------------------------------------------- -->
+        <!-- 0. FAR-LEFT KINETIC LASER SPINE RAIL                 -->
+        <!-- ---------------------------------------------------- -->
+        <aside class="hidden sm:flex flex-col items-center pt-2 select-none">
+          <div class="sticky top-24 flex flex-col items-center h-[420px]">
+            <!-- Vertical Laser Track -->
+            <div class="kinetic-spine-track h-full rounded-full relative flex flex-col justify-between items-center py-1">
+              <div id="spine-laser-fill" class="kinetic-spine-fill rounded-full"></div>
+
+              <!-- 4 Interactive Stage Nodes -->
+              <button data-scroll-to="#sec-brief" class="spine-node-btn active group -ml-[4px]" title="01 / Brief">
+                <span class="spine-node-dot"></span>
+                <span class="font-mono text-[9px] tracking-widest uppercase text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors hidden xl:inline">01</span>
+              </button>
+
+              <button data-scroll-to="#sec-proof" class="spine-node-btn group -ml-[4px]" title="02 / Social Proof">
+                <span class="spine-node-dot"></span>
+                <span class="font-mono text-[9px] tracking-widest uppercase text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors hidden xl:inline">02</span>
+              </button>
+
+              <button data-scroll-to="#sec-impact" class="spine-node-btn group -ml-[4px]" title="03 / Impact Metrics">
+                <span class="spine-node-dot"></span>
+                <span class="font-mono text-[9px] tracking-widest uppercase text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors hidden xl:inline">03</span>
+              </button>
+
+              <button data-scroll-to="#sec-expect" class="spine-node-btn group -ml-[4px]" title="04 / What to Expect">
+                <span class="spine-node-dot"></span>
+                <span class="font-mono text-[9px] tracking-widest uppercase text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors hidden xl:inline">04</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ---------------------------------------------------- -->
+        <!-- LEFT BAR CONTENT STREAM                              -->
+        <!-- ---------------------------------------------------- -->
+        <div class="flex-1 space-y-12">
+
+          <!-- ================================================== -->
+          <!-- BLOCK 01: "TALK TO US" + KINETIC HERO HEADLINE     -->
+          <!-- ================================================== -->
+          <section id="sec-brief" class="left-section pt-1">
+            <!-- Animated TALK TO US Badge -->
+            <div class="mb-6 left-reveal">
+              <div class="talk-pill group cursor-pointer" id="talk-badge">
+                <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-ping"></span>
+                <span>TALK TO US</span>
+                <span class="text-[9px] opacity-60 font-normal ml-1">// LIVE TELEMETRY</span>
+              </div>
+            </div>
+
+            <!-- Kinetic Staggered Headline with Interactive Cycling Phrase -->
+            <h1 id="hero-headline" class="text-4xl sm:text-5xl xl:text-[54px] font-bold tracking-tight leading-[1.12] text-[var(--text-primary)]">
+              <span class="hero-word">Get</span>
+              <span class="hero-word">a</span>
+              <span class="hero-word">SaaS</span>
+              <span class="hero-word">website</span>
+              <span class="hero-word">that</span>
+              <span class="hero-word">makes</span>
+              <span class="hero-word">your</span>
+              <span class="hero-word">product</span>
+              <span id="cycle-phrase-trigger" class="highlight-phrase-wrap hero-word" title="Click to cycle value proposition">
+                <span id="cycle-phrase-text" class="font-serif italic font-normal text-[1.12em]">impossible to ignore</span>
+                <span id="cycle-underline" class="highlight-underline"></span>
+              </span>
+            </h1>
+
+            <p class="mt-4 text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-2 left-reveal">
+              <span>✦ Click highlighted phrase to morph</span>
+              <span>·</span>
+              <span id="active-phrase-index" class="text-[var(--accent-primary)]">01 / 04 POSITIONING</span>
+            </p>
+          </section>
+
+          <!-- ================================================== -->
+          <!-- BLOCK 02: TRUSTED BY 100+ LEADERS & 8-LOGO MATRIX  -->
+          <!-- ================================================== -->
+          <section id="sec-proof" class="left-section space-y-7">
+            
+            <!-- Trusted By + Interactive 3D Clutch Card -->
+            <div class="flex flex-wrap items-center gap-6 sm:gap-10 left-reveal">
+              <div>
+                <p class="font-mono text-xs uppercase tracking-wider text-[var(--text-secondary)] leading-relaxed">
+                  TRUSTED BY <span id="leaders-counter" class="text-[var(--accent-primary)] font-bold">100</span><span class="text-[var(--accent-primary)] font-bold">+</span> B2B<br />
+                  MARKETING LEADERS
+                </p>
+              </div>
+
+              <!-- 3D Tilt Clutch 4.9 Stars Card -->
+              <div id="clutch-card" class="relative flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-[var(--bg-elevated)] border border-[var(--hairline)] cursor-pointer select-none" style="transform-style: preserve-3d;">
+                <!-- Clutch C Icon -->
+                <div class="w-9 h-9 rounded-lg bg-[#1B242B] border border-white/10 flex items-center justify-center font-sans font-black text-lg text-white relative">
+                  C
+                  <span class="w-2 h-2 rounded-full bg-[#FF3D2E] absolute"></span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-xs text-[var(--text-primary)]">Clutch</span>
+                    <span class="font-mono text-xs text-[var(--text-secondary)]">4.9 Stars</span>
+                  </div>
+                  <!-- 5 Animated Stars -->
+                  <div class="flex items-center gap-1 mt-0.5" id="clutch-stars">
+                    <span class="clutch-star text-xs text-[var(--accent-primary)]">★</span>
+                    <span class="clutch-star text-xs text-[var(--accent-primary)]">★</span>
+                    <span class="clutch-star text-xs text-[var(--accent-primary)]">★</span>
+                    <span class="clutch-star text-xs text-[var(--accent-primary)]">★</span>
+                    <span class="clutch-star text-xs text-[var(--accent-primary)]">★</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8-Logo Interactive Spotlight Matrix (Matching Reference Brands) -->
+            <div class="space-y-2.5 left-reveal">
+              <div class="flex items-center justify-between font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                <span>// ENTERPRISE &amp; HYPERGROWTH PARTNERS</span>
+                <button id="pulse-logos-btn" class="text-[var(--accent-primary)] hover:underline">
+                  ⚡ Trigger Wave Pulse
+                </button>
+              </div>
+
+              <div id="logo-grid" class="logo-bento-grid">
+                <!-- 1. Amazon -->
+                <div class="logo-cell" data-kpi="Enterprise UI Systems · 99.9% Uptime">
+                  <svg class="logo-svg h-6" viewBox="0 0 120 36" fill="currentColor">
+                    <text x="12" y="23" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="21" letter-spacing="-0.5">amazon</text>
+                    <path d="M22 28 Q52 36 86 26" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    <path d="M81 24 L87 26 L83 31" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                  </svg>
+                  <span class="logo-kpi-badge">Enterprise Design System</span>
+                </div>
+
+                <!-- 2. Razorpay -->
+                <div class="logo-cell" data-kpi="+42% Checkout Conversion Lift">
+                  <svg class="logo-svg h-5" viewBox="0 0 140 32" fill="currentColor">
+                    <polygon points="14,6 22,6 15,26 7,26" opacity="0.7"/>
+                    <polygon points="21,11 27,11 22,26 16,26"/>
+                    <text x="31" y="23" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-style="italic" font-size="19">Razorpay</text>
+                  </svg>
+                  <span class="logo-kpi-badge">+42% Checkout Conversion</span>
+                </div>
+
+                <!-- 3. Z47 -->
+                <div class="logo-cell" data-kpi="Interactive Portfolio & Brand OS">
+                  <svg class="logo-svg h-6" viewBox="0 0 100 32" fill="currentColor">
+                    <text x="20" y="24" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="24" letter-spacing="-1">Z47</text>
+                  </svg>
+                  <span class="logo-kpi-badge">3D WebGL Brand Redesign</span>
+                </div>
+
+                <!-- 4. factors.ai -->
+                <div class="logo-cell" data-kpi="+68% Pipeline Attribution Demo Flow">
+                  <svg class="logo-svg h-5" viewBox="0 0 140 32" fill="currentColor">
+                    <circle cx="16" cy="16" r="7" fill="none" stroke="currentColor" stroke-width="3"/>
+                    <text x="29" y="22" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="18">factors.ai</text>
+                  </svg>
+                  <span class="logo-kpi-badge">+68% Demo Bookings</span>
+                </div>
+
+                <!-- 5. roommaster -->
+                <div class="logo-cell" data-kpi="Hospitality SaaS Re-Architecture">
+                  <svg class="logo-svg h-6" viewBox="0 0 150 34" fill="currentColor">
+                    <rect x="8" y="8" width="16" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                    <text x="30" y="22" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="16">roommaster</text>
+                  </svg>
+                  <span class="logo-kpi-badge">2.3x Organic Signups</span>
+                </div>
+
+                <!-- 6. Cashfree -->
+                <div class="logo-cell" data-kpi="High-Velocity Fintech Developer Hub">
+                  <svg class="logo-svg h-5" viewBox="0 0 140 32" fill="currentColor">
+                    <path d="M8 14 L18 8 L15 24 Z"/>
+                    <text x="24" y="22" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="19">Cashfree</text>
+                  </svg>
+                  <span class="logo-kpi-badge">99 Lighthouse Perf Score</span>
+                </div>
+
+                <!-- 7. zamp -->
+                <div class="logo-cell" data-kpi="AI Tax Automation Motion Identity">
+                  <svg class="logo-svg h-6" viewBox="0 0 110 32" fill="currentColor">
+                    <text x="20" y="23" font-family="Plus Jakarta Sans, sans-serif" font-weight="600" font-size="23" letter-spacing="-0.5">zamp</text>
+                  </svg>
+                  <span class="logo-kpi-badge">AI Product Storytelling</span>
+                </div>
+
+                <!-- 8. WizCommerce -->
+                <div class="logo-cell" data-kpi="B2B Wholesale AI Launch Experience">
+                  <svg class="logo-svg h-5" viewBox="0 0 160 32" fill="currentColor">
+                    <circle cx="13" cy="16" r="5"/>
+                    <text x="24" y="21" font-family="Plus Jakarta Sans, sans-serif" font-weight="600" font-size="15.5">WizCommerce</text>
+                  </svg>
+                  <span class="logo-kpi-badge">+54% Enterprise Leads</span>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ================================================== -->
+          <!-- BLOCK 03: 50% & 60% ODOMETERS + LIVE SPARKLINES    -->
+          <!-- ================================================== -->
+          <section id="sec-impact" class="left-section space-y-5 left-reveal">
+            
+            <!-- Top Laser Rule -->
+            <div class="laser-rule">
+              <div class="laser-photon" id="photon-top"></div>
+            </div>
+
+            <!-- Dual Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 py-2">
+              
+              <!-- Metric 1: 50% Increase in Leads -->
+              <div class="group relative flex items-center justify-between p-4 rounded-xl bg-[var(--bg-elevated)]/60 border border-transparent hover:border-[var(--accent-border)] transition-all">
+                <div class="flex items-center gap-4">
+                  <div class="font-sans text-4xl sm:text-5xl font-light tracking-tight text-[var(--accent-primary)]">
+                    <span id="metric-leads" data-target="50">0</span>%
+                  </div>
+                  <div class="text-xs sm:text-sm text-[var(--text-secondary)] leading-snug font-medium">
+                    Increase in<br />
+                    <span class="text-[var(--text-primary)]">Leads</span>
+                  </div>
+                </div>
+
+                <!-- Live Animated SVG Sparkline 1 -->
+                <svg class="w-20 h-10 overflow-visible" viewBox="0 0 80 36">
+                  <path id="sparkline-1" d="M 2 32 Q 20 28, 34 18 T 62 10 L 78 4" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round"/>
+                  <circle id="spark-dot-1" cx="78" cy="4" r="3.5" fill="var(--accent-primary)"/>
+                </svg>
+              </div>
+
+              <!-- Metric 2: 60% Increase in User Engagement -->
+              <div class="group relative flex items-center justify-between p-4 rounded-xl bg-[var(--bg-elevated)]/60 border border-transparent hover:border-[var(--accent-border)] sm:border-l sm:border-l-[var(--hairline)] transition-all">
+                <div class="flex items-center gap-4">
+                  <div class="font-sans text-4xl sm:text-5xl font-light tracking-tight text-[var(--accent-primary)]">
+                    <span id="metric-engagement" data-target="60">0</span>%
+                  </div>
+                  <div class="text-xs sm:text-sm text-[var(--text-secondary)] leading-snug font-medium">
+                    Increase in User<br />
+                    <span class="text-[var(--text-primary)]">Engagement</span>
+                  </div>
+                </div>
+
+                <!-- Live Animated SVG Sparkline 2 -->
+                <svg class="w-20 h-10 overflow-visible" viewBox="0 0 80 36">
+                  <path id="sparkline-2" d="M 2 30 C 18 30, 28 22, 44 16 S 64 8, 78 3" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round"/>
+                  <circle id="spark-dot-2" cx="78" cy="3" r="3.5" fill="var(--accent-primary)"/>
+                </svg>
+              </div>
+
+            </div>
+
+            <!-- Bottom Laser Rule -->
+            <div class="laser-rule">
+              <div class="laser-photon" id="photon-bottom"></div>
+            </div>
+
+          </section>
+
+          <!-- ================================================== -->
+          <!-- BLOCK 04: "WHAT TO EXPECT" ANIMATED DIAGNOSTIC     -->
+          <!-- ================================================== -->
+          <section id="sec-expect" class="left-section space-y-5 left-reveal">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg sm:text-xl font-bold text-[var(--text-primary)] tracking-tight">
+                What to expect
+              </h2>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-[var(--accent-primary)]">
+                // CLICK ANY MODULE TO INSPECT
+              </span>
+            </div>
+
+            <!-- Interactive 4-Step Accordion / Diagnostic Cards -->
+            <div class="space-y-3" id="expect-accordion">
+
+              <!-- STEP 1: Website Performance Reality Check (Matches Screenshot) -->
+              <div class="expect-step-card active-step" data-step="0">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3.5">
+                    <div class="w-9 h-9 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent-border)] flex items-center justify-center text-[var(--accent-primary)] font-mono text-xs font-bold">
+                      01
+                    </div>
+                    <div>
+                      <h3 class="text-sm sm:text-base font-semibold text-[var(--text-primary)]">
+                        Website Performance Reality Check
+                      </h3>
+                      <p class="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                        CORE WEB VITALS · FUNNEL FRICTION AUDIT
+                      </p>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs text-[var(--accent-primary)]">● LIVE</span>
+                </div>
+
+                <!-- Expandable Live Visual Diagnostic Inside Step 1 -->
+                <div class="expect-step-body">
+                  <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
+                    We benchmark your current SaaS site against top-decile B2B competitors—identifying drop-off points, messaging gaps, and Core Web Vitals bottlenecks.
+                  </p>
+                  <div class="grid grid-cols-3 gap-2.5 pt-2 border-t border-[var(--hairline)] font-mono text-[11px]">
+                    <div class="p-2.5 rounded-lg bg-[var(--bg-page)]/60">
+                      <span class="text-[var(--text-muted)] block text-[9px]">TARGET LCP</span>
+                      <span class="text-[var(--accent-primary)] font-bold">0.4s Speed</span>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-[var(--bg-page)]/60">
+                      <span class="text-[var(--text-muted)] block text-[9px]">LIGHTHOUSE</span>
+                      <span class="text-[var(--accent-primary)] font-bold">99 / 100</span>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-[var(--bg-page)]/60">
+                      <span class="text-[var(--text-muted)] block text-[9px]">CONV. LIFT</span>
+                      <span class="text-[var(--accent-primary)] font-bold">+2.4x Avg</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 2: Category-Defining Positioning & UX Architecture -->
+              <div class="expect-step-card" data-step="1">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3.5">
+                    <div class="w-9 h-9 rounded-lg bg-[var(--bg-page)] border border-[var(--hairline)] flex items-center justify-center text-[var(--text-secondary)] font-mono text-xs font-bold">
+                      02
+                    </div>
+                    <div>
+                      <h3 class="text-sm sm:text-base font-semibold text-[var(--text-primary)]">
+                        Positioning &amp; Narrative Architecture
+                      </h3>
+                      <p class="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                        HERO HOOK · ENTERPRISE BUYER JOURNEY
+                      </p>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs text-[var(--text-muted)]">+</span>
+                </div>
+
+                <div class="expect-step-body">
+                  <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                    Receive a custom wireframe and narrative blueprint showing how to turn complex technical features into an instant "aha" moment within 5 seconds of landing.
+                  </p>
+                </div>
+              </div>
+
+              <!-- STEP 3: Interactive GSAP & 3D WebGL Motion Blueprint -->
+              <div class="expect-step-card" data-step="2">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3.5">
+                    <div class="w-9 h-9 rounded-lg bg-[var(--bg-page)] border border-[var(--hairline)] flex items-center justify-center text-[var(--text-secondary)] font-mono text-xs font-bold">
+                      03
+                    </div>
+                    <div>
+                      <h3 class="text-sm sm:text-base font-semibold text-[var(--text-primary)]">
+                        Interactive Motion &amp; 3D Product Showcase Plan
+                      </h3>
+                      <p class="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                        GSAP SCROLL CHOREOGRAPHY · WEBGL / R3F
+                      </p>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs text-[var(--text-muted)]">+</span>
+                </div>
+
+                <div class="expect-step-body">
+                  <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                    We demo live examples of custom GSAP scroll triggers, interactive product sandboxes, and shader visuals tailored specifically to your product category.
+                  </p>
+                </div>
+              </div>
+
+              <!-- STEP 4: Fixed-Scope Sprint Roadmap & ROI Projection -->
+              <div class="expect-step-card" data-step="3">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3.5">
+                    <div class="w-9 h-9 rounded-lg bg-[var(--bg-page)] border border-[var(--hairline)] flex items-center justify-center text-[var(--text-secondary)] font-mono text-xs font-bold">
+                      04
+                    </div>
+                    <div>
+                      <h3 class="text-sm sm:text-base font-semibold text-[var(--text-primary)]">
+                        Fixed-Scope Roadmap &amp; Transparent Pricing
+                      </h3>
+                      <p class="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                        WEEK-BY-WEEK MILESTONES · ZERO SURPRISES
+                      </p>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs text-[var(--text-muted)]">+</span>
+                </div>
+
+                <div class="expect-step-body">
+                  <p class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                    Walk away with a clear 4-to-6 week execution timeline, exact investment breakdown, and dedicated team allocation—no high-pressure sales pitch.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- RIGHT COLUMN: STICKY STRATEGY CALL FORM CARD (5 COLS)  -->
+      <!-- ====================================================== -->
+      <div class="lg:col-span-5 lg:sticky lg:top-24">
+        <div id="form-card" class="strategy-form-card p-6 sm:p-8">
+
+          <!-- Live Readiness Progress Bar at Very Top of Form Card -->
+          <div class="absolute top-0 left-0 right-0 h-1 bg-white/5 overflow-hidden">
+            <div id="form-completion-bar" class="h-full w-0 bg-[var(--accent-primary)] transition-all duration-300"></div>
+          </div>
+
+          <!-- Top Callout Banner with Dual Avatars (Matching Screenshot) -->
+          <div class="p-4 rounded-md bg-[var(--bg-page)]/60 border border-[var(--hairline)] flex items-center gap-4 mb-7">
+            <!-- Dual Founder Avatars -->
+            <div class="flex items-center -space-x-2 flex-shrink-0">
+              <div class="w-12 h-12 rounded-md bg-gradient-to-br from-emerald-400 to-teal-700 p-0.5 shadow-md">
+                <svg class="w-full h-full rounded bg-[#141C22] text-emerald-300" viewBox="0 0 40 40" fill="currentColor">
+                  <circle cx="20" cy="15" r="7"/>
+                  <path d="M8 36 C8 27, 32 27, 32 36 Z"/>
+                </svg>
+              </div>
+              <div class="w-12 h-12 rounded-md bg-gradient-to-br from-amber-300 to-orange-500 p-0.5 shadow-md">
+                <svg class="w-full h-full rounded bg-[#221A14] text-amber-300" viewBox="0 0 40 40" fill="currentColor">
+                  <circle cx="20" cy="15" r="7"/>
+                  <path d="M8 36 C8 27, 32 27, 32 36 Z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="text-xs sm:text-[13px] leading-snug text-[var(--text-primary)] font-medium">
+              Book a free 30-minute strategy session with <span class="text-[var(--accent-primary)] font-semibold">Ayush or Harsh</span>.
+              <span class="block font-mono text-[10px] text-[var(--text-muted)] mt-1">
+                ● 2 STRATEGY SLOTS LEFT THIS WEEK
+              </span>
+            </div>
+          </div>
+
+          <!-- Strategy Session Form -->
+          <form id="strategy-form" class="space-y-4" novalidate>
+            
+            <!-- Row 1: First name* | Last name* -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  First name<span class="text-red-500">*</span>
+                </label>
+                <input type="text" required placeholder="Enter your first name" class="form-input-field track-input" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  Last name<span class="text-red-500">*</span>
+                </label>
+                <input type="text" required placeholder="Enter your last name" class="form-input-field track-input" />
+              </div>
+            </div>
+
+            <!-- Row 2: Phone number* | Email* -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  Phone number<span class="text-red-500">*</span>
+                </label>
+                <div class="flex gap-1.5">
+                  <select class="form-input-field !w-[74px] !px-2 font-mono text-xs cursor-pointer">
+                    <option value="+91">IN +91</option>
+                    <option value="+1">US +1</option>
+                    <option value="+44">UK +44</option>
+                    <option value="+971">AE +971</option>
+                  </select>
+                  <input type="tel" required placeholder="+91 98765 43210" class="form-input-field flex-1 track-input" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  Email<span class="text-red-500">*</span>
+                </label>
+                <input type="email" required placeholder="Enter your email" class="form-input-field track-input" />
+              </div>
+            </div>
+
+            <!-- Row 3: Company name* | Budget* -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  Company name<span class="text-red-500">*</span>
+                </label>
+                <input type="text" required placeholder="Enter your company name" class="form-input-field track-input" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  Budget<span class="text-red-500">*</span>
+                </label>
+                <select required class="form-input-field track-input cursor-pointer">
+                  <option value="">Please Select</option>
+                  <option value="8k-15k">₹8,000 – ₹15,000 (Static / Dynamic)</option>
+                  <option value="15k-25k">₹15,000 – ₹25,000 (Custom Software)</option>
+                  <option value="25k+">₹25,000+ (AI Services &amp; Full SaaS)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 4: How did you hear about us?* | Message -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  How did you hear about us?<span class="text-red-500">*</span>
+                </label>
+                <select required class="form-input-field track-input cursor-pointer">
+                  <option value="">Please Select</option>
+                  <option value="linkedin">LinkedIn / X</option>
+                  <option value="clutch">Clutch 4.9★ Directory</option>
+                  <option value="referral">Founder Referral</option>
+                  <option value="search">Google / AI Search</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[var(--text-primary)] mb-1.5">
+                  Message
+                </label>
+                <textarea rows="3" placeholder="Tell us more about your project" class="form-input-field track-input resize-y"></textarea>
+              </div>
+            </div>
+
+            <!-- Submit Button Row -->
+            <div class="pt-2 flex items-center justify-between gap-4">
+              <button type="submit" id="submit-strategy-btn" class="cta-primary-btn px-7 py-3 text-xs sm:text-sm cursor-pointer">
+                Submit
+              </button>
+              <span id="readiness-label" class="font-mono text-[10px] text-[var(--text-muted)]">
+                 FORM READINESS: 0%
+              </span>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: DROP-IN CODE EXPORT FOR USER'S WEBSITE              -->
+  <!-- ========================================================== -->
+  <div id="code-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+    <div class="bg-[#0B0F12] text-white border border-white/15 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+        <div>
+          <span class="font-mono text-[10px] uppercase tracking-widest text-[#A6F4B5] font-bold">
+            // READY TO PASTE INTO YOUR SITE
+          </span>
+          <h3 class="text-base font-semibold text-white">
+            Animated Left Bar + Strategy Form GSAP Controller
+          </h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="copy-code-btn" class="px-4 py-1.5 rounded-lg bg-[#A6F4B5] text-[#09120B] font-mono text-xs uppercase tracking-wider font-bold">
+            Copy Code
+          </button>
+          <button id="close-code-btn" class="w-8 h-8 rounded-full border border-white/15 hover:border-white flex items-center justify-center font-mono text-xs">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div class="p-5 overflow-y-auto font-mono text-xs leading-relaxed text-emerald-200 select-all bg-[#070A0C]">
+<pre id="raw-code-box" class="whitespace-pre-wrap break-words">// GSAP Left Bar Choreography (Kinetic Headline + Spotlight Logos + Odometer + Sparklines)
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
+
+// 1. Staggered 3D Hero Word Reveal
+gsap.from('.hero-word', {
+  y: 36,
+  opacity: 0,
+  rotationX: -45,
+  transformPerspective: 800,
+  duration: 0.75,
+  stagger: 0.045,
+  ease: 'expo.out'
+});
+
+// 2. Mouse-Tracking Radial Spotlight on the 8 Client Logo Cells
+document.querySelectorAll('.logo-cell').forEach((cell) => {
+  cell.addEventListener('mousemove', (e) => {
+    const r = cell.getBoundingClientRect();
+    cell.style.setProperty('--cell-mx', `${e.clientX - r.left}px`);
+    cell.style.setProperty('--cell-my', `${e.clientY - r.top}px`);
+  });
+});
+
+// 3. Odometer Count-Up + SVG Sparkline Draw for 50% & 60% Metrics
+['#metric-leads', '#metric-engagement'].forEach((selector) => {
+  const el = document.querySelector(selector);
+  const target = parseInt(el.dataset.target, 10);
+  const obj = { val: 0 };
+  gsap.to(obj, {
+    val: target,
+    duration: 1.6,
+    ease: 'power3.out',
+    onUpdate: () => { el.textContent = Math.round(obj.val); }
+  });
+});
+
+// 4. Continuous Laser Photon Sweep on Metric Divider Lines
+gsap.to('.laser-photon', {
+  left: '105%',
+  duration: 2.4,
+  repeat: -1,
+  ease: 'power2.inOut',
+  stagger: 1.1
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-box" class="fixed bottom-6 right-6 z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-300">
+    <div class="bg-[var(--bg-elevated)] border border-[var(--accent-primary)] text-[var(--text-primary)] px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 font-mono text-xs">
+      <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-primary)] animate-ping"></span>
+      <span id="toast-text">Strategy Request Initialized</span>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- GSAP LEFT BAR ANIMATION ENGINE                             -->
+  <!-- ========================================================== -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+      // Toast helper
+      const toastBox = document.getElementById('toast-box');
+      const toastText = document.getElementById('toast-text');
+      let toastTimer;
+      function showToast(msg) {
+        clearTimeout(toastTimer);
+        toastText.textContent = msg;
+        toastBox.classList.remove('opacity-0', 'translate-y-3');
+        toastBox.classList.add('opacity-100', 'translate-y-0');
+        toastTimer = setTimeout(() => {
+          toastBox.classList.remove('opacity-100', 'translate-y-0');
+          toastBox.classList.add('opacity-0', 'translate-y-3');
+        }, 2800);
+      }
+
+      // ----------------------------------------------------------
+      // 1. MASTER LEFT BAR ENTRANCE CHOREOGRAPHY
+      // ----------------------------------------------------------
+      function playLeftBarEntrance() {
+        gsap.killTweensOf(['.hero-word', '.left-reveal', '.logo-cell', '.clutch-star']);
+
+        const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+        // Reset counters to 0
+        const leadsEl = document.getElementById('metric-leads');
+        const engageEl = document.getElementById('metric-engagement');
+        const leadersEl = document.getElementById('leaders-counter');
+        leadsEl.textContent = '0';
+        engageEl.textContent = '0';
+        leadersEl.textContent = '0';
+
+        // 1A. Staggered 3D Hero Words
+        tl.fromTo(
+          '.hero-word',
+          { y: 38, opacity: 0, rotationX: -50, transformPerspective: 900 },
+          { y: 0, opacity: 1, rotationX: 0, duration: 0.8, stagger: 0.045 }
+        )
+        // 1B. Left Column Sections Fade Up
+        .fromTo(
+          '.left-reveal',
+          { y: 24, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 },
+          '-=0.55'
+        )
+        // 1C. Clutch 5 Stars Pop-in Wave
+        .fromTo(
+          '.clutch-star',
+          { scale: 0, rotation: -45, opacity: 0 },
+          { scale: 1, rotation: 0, opacity: 1, duration: 0.45, stagger: 0.06, ease: 'back.out(2.5)' },
+          '-=0.5'
+        )
+        // 1D. 8 Client Logo Cells Elastic Wave
+        .fromTo(
+          '.logo-cell',
+          { y: 20, opacity: 0, scale: 0.92 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.55, stagger: 0.045, ease: 'back.out(1.6)' },
+          '-=0.45'
+        );
+
+        // 1E. Animate Odometer Numbers (100+, 50%, 60%)
+        const countObj = { leaders: 0, leads: 0, engage: 0 };
+        gsap.to(countObj, {
+          leaders: 100,
+          leads: 50,
+          engage: 60,
+          duration: 1.6,
+          delay: 0.35,
+          ease: 'power3.out',
+          onUpdate: () => {
+            leadersEl.textContent = Math.round(countObj.leaders);
+            leadsEl.textContent = Math.round(countObj.leads);
+            engageEl.textContent = Math.round(countObj.engage);
+          }
+        });
+
+        // 1F. Animate SVG Sparklines Stroke Draw
+        ['#sparkline-1', '#sparkline-2'].forEach((sel) => {
+          const path = document.querySelector(sel);
+          if (path) {
+            const len = path.getTotalLength();
+            gsap.fromTo(
+              path,
+              { strokeDasharray: len, strokeDashoffset: len },
+              { strokeDashoffset: 0, duration: 1.4, delay: 0.45, ease: 'power3.out' }
+            );
+          }
+        });
+      }
+
+      playLeftBarEntrance();
+      document.getElementById('replay-left-btn').addEventListener('click', playLeftBarEntrance);
+
+      // ----------------------------------------------------------
+      // 2. INTERACTIVE CYCLING HERO PHRASE ("impossible to ignore")
+      // ----------------------------------------------------------
+      const phrases = [
+        'impossible to ignore',
+        'a conversion machine',
+        'category-defining',
+        'built for hypergrowth'
+      ];
+      let phraseIdx = 0;
+      const phraseTrigger = document.getElementById('cycle-phrase-trigger');
+      const phraseText = document.getElementById('cycle-phrase-text');
+      const phraseUnderline = document.getElementById('cycle-underline');
+      const phraseCounter = document.getElementById('active-phrase-index');
+
+      function cycleHeroPhrase() {
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        const tl = gsap.timeline();
+        tl.to(phraseText, { y: -14, opacity: 0, duration: 0.2, ease: 'power2.in' })
+          .to(phraseUnderline, { scaleX: 0, duration: 0.2 }, '<')
+          .call(() => {
+            phraseText.textContent = phrases[phraseIdx];
+            phraseCounter.textContent = `0${phraseIdx + 1} / 04 POSITIONING`;
+          })
+          .fromTo(
+            phraseText,
+            { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.4, ease: 'back.out(1.8)' }
+          )
+          .to(phraseUnderline, { scaleX: 1, duration: 0.4, ease: 'expo.out' }, '<');
+      }
+
+      phraseTrigger.addEventListener('click', cycleHeroPhrase);
+
+      // Auto-cycle subtly every 4.2 seconds
+      let phraseInterval = setInterval(cycleHeroPhrase, 4200);
+      phraseTrigger.addEventListener('mouseenter', () => clearInterval(phraseInterval));
+
+      // ----------------------------------------------------------
+      // 3. MOUSE-TRACKING RADIAL SPOTLIGHT ON 8 LOGO CELLS
+      // ----------------------------------------------------------
+      const logoCells = document.querySelectorAll('.logo-cell');
+      logoCells.forEach((cell) => {
+        cell.addEventListener('mousemove', (e) => {
+          const rect = cell.getBoundingClientRect();
+          cell.style.setProperty('--cell-mx', `${e.clientX - rect.left}px`);
+          cell.style.setProperty('--cell-my', `${e.clientY - rect.top}px`);
+        });
+      });
+
+      // Manual Wave Pulse button for the 8 logos
+      document.getElementById('pulse-logos-btn').addEventListener('click', () => {
+        gsap.fromTo(
+          '.logo-cell',
+          { scale: 1 },
+          {
+            scale: 1.06,
+            borderColor: 'var(--accent-primary)',
+            duration: 0.22,
+            stagger: { amount: 0.35, grid: [2, 4], from: 'start' },
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.out'
+          }
+        );
+      });
+
+      // ----------------------------------------------------------
+      // 4. 3D TILT ON CLUTCH 4.9★ BADGE
+      // ----------------------------------------------------------
+      const clutchCard = document.getElementById('clutch-card');
+      const clutchRx = gsap.quickTo(clutchCard, 'rotationX', { duration: 0.35, ease: 'power3.out' });
+      const clutchRy = gsap.quickTo(clutchCard, 'rotationY', { duration: 0.35, ease: 'power3.out' });
+
+      clutchCard.addEventListener('mousemove', (e) => {
+        const r = clutchCard.getBoundingClientRect();
+        const rx = -((e.clientY - r.top) / r.height - 0.5) * 18;
+        const ry = ((e.clientX - r.left) / r.width - 0.5) * 18;
+        clutchRx(rx);
+        clutchRy(ry);
+      });
+      clutchCard.addEventListener('mouseleave', () => {
+        clutchRx(0);
+        clutchRy(0);
+      });
+      clutchCard.addEventListener('click', () => {
+        gsap.fromTo(
+          '.clutch-star',
+          { scale: 1 },
+          { scale: 1.45, duration: 0.16, stagger: 0.05, yoyo: true, repeat: 1 }
+        );
+      });
+
+      // ----------------------------------------------------------
+      // 5. CONTINUOUS PHOTON PULSES ALONG METRIC DIVIDER LINES
+      // ----------------------------------------------------------
+      gsap.to('#photon-top', {
+        left: '105%',
+        duration: 2.5,
+        repeat: -1,
+        ease: 'power2.inOut',
+        repeatDelay: 0.4
+      });
+      gsap.to('#photon-bottom', {
+        left: '105%',
+        duration: 2.5,
+        delay: 1.25,
+        repeat: -1,
+        ease: 'power2.inOut',
+        repeatDelay: 0.4
+      });
+
+      // ----------------------------------------------------------
+      // 6. "WHAT TO EXPECT" INTERACTIVE ACCORDION TIMELINE
+      // ----------------------------------------------------------
+      const expectCards = document.querySelectorAll('.expect-step-card');
+      expectCards.forEach((card, idx) => {
+        card.addEventListener('click', () => {
+          expectCards.forEach((c) => c.classList.remove('active-step'));
+          card.classList.add('active-step');
+
+          // Pulse the left spine laser fill to match the selected step
+          gsap.to('#spine-laser-fill', {
+            height: `${Math.min(100, 65 + idx * 12)}%`,
+            duration: 0.45,
+            ease: 'power3.out'
+          });
+        });
+      });
+
+      // ----------------------------------------------------------
+      // 7. LEFT-EDGE KINETIC SPINE RAIL (SCROLL + HOVER SYNC)
+      // ----------------------------------------------------------
+      const spineBtns = document.querySelectorAll('.spine-node-btn');
+      const leftSections = document.querySelectorAll('.left-section');
+
+      function activateSpineNode(index) {
+        spineBtns.forEach((b, i) => b.classList.toggle('active', i <= index));
+        const pct = ((index + 1) / leftSections.length) * 100;
+        gsap.to('#spine-laser-fill', { height: `${pct}%`, duration: 0.45, ease: 'power3.out' });
+      }
+
+      leftSections.forEach((sec, idx) => {
+        sec.addEventListener('mouseenter', () => activateSpineNode(idx));
+      });
+
+      spineBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const targetSel = btn.getAttribute('data-scroll-to');
+          activateSpineNode(idx);
+          gsap.to(window, { scrollTo: { y: targetSel, offsetY: 90 }, duration: 0.7, ease: 'expo.out' });
+        });
+      });
+
+      // Initialize spine at 35%
+      gsap.set('#spine-laser-fill', { height: '35%' });
+
+      // ----------------------------------------------------------
+      // 8. CROSS-COLUMN REACTIVITY: FORM READINESS METER
+      // ----------------------------------------------------------
+      const trackedInputs = document.querySelectorAll('.track-input');
+      const completionBar = document.getElementById('form-completion-bar');
+      const readinessLabel = document.getElementById('readiness-label');
+
+      function updateFormReadiness() {
+        let filled = 0;
+        trackedInputs.forEach((inp) => {
+          if (inp.value && inp.value.trim().length > 0) filled++;
+        });
+        const pct = Math.round((filled / trackedInputs.length) * 100);
+        completionBar.style.width = `${pct}%`;
+        readinessLabel.textContent = `FORM READINESS: ${pct}%`;
+      }
+
+      trackedInputs.forEach((inp) => {
+        inp.addEventListener('input', updateFormReadiness);
+        inp.addEventListener('change', updateFormReadiness);
+        inp.addEventListener('focus', () => {
+          // Send a subtle pulse to the TALK TO US badge on the left column
+          gsap.fromTo('#talk-badge', { scale: 1 }, { scale: 1.06, duration: 0.18, yoyo: true, repeat: 1 });
+        });
+      });
+
+      document.getElementById('strategy-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-strategy-btn');
+        btn.textContent = 'Session Requested ✓';
+        showToast('Strategy Call Request Sent to Ayush & Harsh!');
+        setTimeout(() => {
+          btn.textContent = 'Submit';
+        }, 2600);
+      });
+
+      // ----------------------------------------------------------
+      // 9. THEME SWITCHER & CODE EXPORT MODAL
+      // ----------------------------------------------------------
+      const themeBtns = document.querySelectorAll('.theme-btn');
+      themeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const theme = btn.getAttribute('data-set-theme');
+          document.body.setAttribute('data-theme', theme);
+
+          themeBtns.forEach((b) => {
+            b.className = 'theme-btn px-2.5 py-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all';
+          });
+          btn.className = 'theme-btn px-2.5 py-1 rounded bg-[var(--accent-primary)] text-[var(--btn-text)] font-bold transition-all';
+        });
+      });
+
+      // Code Modal
+      const codeModal = document.getElementById('code-modal');
+      document.getElementById('open-code-modal').addEventListener('click', () => {
+        codeModal.classList.remove('hidden');
+        codeModal.classList.add('flex');
+      });
+      document.getElementById('close-code-btn').addEventListener('click', () => {
+        codeModal.classList.add('hidden');
+        codeModal.classList.remove('flex');
+      });
+      codeModal.addEventListener('click', (e) => {
+        if (e.target === codeModal) {
+          codeModal.classList.add('hidden');
+          codeModal.classList.remove('flex');
+        }
+      });
+
+      const copyBtn = document.getElementById('copy-code-btn');
+      copyBtn.addEventListener('click', () => {
+        const snippet = document.getElementById('raw-code-box').textContent;
+        const textarea = document.createElement('textarea');
+        textarea.value = snippet;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy Code';
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

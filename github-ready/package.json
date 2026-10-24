@@ -1,0 +1,17 @@
+{
+  "name": "ov-el-website",
+  "version": "1.0.0",
+  "description": "Ov.EL website — design and engineering studio",
+  "private": true,
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build step'",
+    "serve": "npx serve ."
+  },
+  "dependencies": {
+    "gsap": "^3.15.0"
+  },
+  "devDependencies": {
+    "three": "^0.162.0"
+  }
+}

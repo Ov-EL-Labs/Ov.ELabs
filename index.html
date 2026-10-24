@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ov.EL Labs builds websites, mobile apps, and custom software in Bangalore, India.">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="512x512">
+  <title>Ov.EL Labs — Software, built to land</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Plus+Jakarta+Sans:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    :root { color-scheme: light; }
+    html, body { margin: 0; min-height: 100%; background: #FBF9F5; color: #111; font-family: Satoshi, sans-serif; }
+    body { overscroll-behavior-y: auto; }
+    ::selection { background: #6342FF; color: #fff; }
+    a:focus-visible { outline: 2px solid #6342FF; outline-offset: 4px; }
+    .font-mono { font-family: 'Space Mono', monospace; }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    window.tailwind = window.tailwind || { config: {} };
+    tailwind.config = { theme: { extend: {
+      colors: { 'canvas-cream':'#FBF9F5', 'canvas-surface':'#F4F1EA', 'pitch-black':'#111111', 'electric-violet':'#6342FF', 'text-muted':'#686663', 'border-subtle':'rgba(17,17,17,.10)' },
+      fontFamily: { headline:['Satoshi','sans-serif'], body:['Satoshi','sans-serif'], mono:['Space Mono','monospace'] }
+    } } };
+  </script>
+  <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/","gsap":"./node_modules/gsap/index.js","gsap/ScrollTrigger":"./node_modules/gsap/ScrollTrigger.js"}}</script>
+  <script type="module" src="./js/hero.js"></script>
+  <script type="module" src="./js/pricing.js"></script>
+  <script type="module" src="./js/preloader.js"></script>
+</head>
+<body class="bg-canvas-cream text-pitch-black antialiased">
+  <div class="ovel-preloader" id="ovel-preloader" role="status" aria-label="Loading Ov.EL Labs" aria-hidden="true">
+    <div class="preloader-logo" aria-hidden="true">
+      <div class="preloader-sparks" id="preloader-sparks"></div>
+      <span class="preloader-char preloader-o" id="preloader-o">O</span>
+      <span class="preloader-char preloader-v" id="preloader-v">v</span>
+      <span class="preloader-dot-slot" id="preloader-dot-slot">
+        <span class="preloader-shadow" id="preloader-shadow"></span>
+        <span class="preloader-dot" id="preloader-dot">
+          <span class="preloader-eyes" id="preloader-eyes"><i></i><i></i></span>
+        </span>
+      </span>
+      <span class="preloader-char preloader-e" id="preloader-e">E</span>
+      <span class="preloader-l-wrap">
+        <span class="preloader-char preloader-l" id="preloader-l">L</span>
+        <span class="preloader-labs" aria-hidden="true">
+          <span class="preloader-lab">L</span><span class="preloader-lab">A</span><span class="preloader-lab">B</span><span class="preloader-lab">S</span>
+        </span>
+      </span>
+    </div>
+  </div>
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-border-subtle bg-[#FBF9F5]/95 backdrop-blur-sm">
+    <div class="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 lg:px-12">
+      <a class="flex items-center" href="#home" aria-label="Ov.EL Labs home">
+        <img class="h-10 w-36 object-cover object-center" src="v%20(1)%20(1).png" alt="Ov.EL Labs">
+      </a>
+      <nav aria-label="Main navigation" class="hidden items-center gap-8 md:flex">
+        <a class="text-sm text-text-muted transition-colors hover:text-pitch-black" href="#services">Services</a>
+        <a class="text-sm text-text-muted transition-colors hover:text-pitch-black" href="#pricing">Starting prices</a>
+        <a class="text-sm text-text-muted transition-colors hover:text-pitch-black" href="#about">About</a>
+        <a class="text-sm text-text-muted transition-colors hover:text-pitch-black" href="connect-with-us.html">Connect with us</a>
+      </nav>
+      <a class="inline-flex items-center gap-2 border border-pitch-black/20 px-4 py-2.5 font-mono text-[10px] uppercase tracking-wider transition-colors hover:bg-pitch-black hover:text-white sm:text-xs" href="connect-with-us.html">
+        <span>Start a project</span><span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="w-full pt-20">
+    <section class="hero-section relative isolate overflow-hidden border-b border-border-subtle" id="home" aria-labelledby="hero-title">
+      <div class="hero-wordmark" aria-hidden="true"><img src="v%20(1)%20(1).png" alt=""></div>
+      <div class="hero-shell relative z-10 mx-auto flex min-h-[calc(100svh-5rem)] max-w-6xl flex-col px-6 pb-5 pt-8 lg:px-12 lg:pb-7 lg:pt-5">
+        <div class="hero-kicker flex items-center justify-between gap-4 border-b border-pitch-black/15 pb-4 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted sm:text-xs">
+          <span><span class="text-electric-violet">Ov.EL Labs</span><span class="mx-2">/</span>Software studio</span>
+          <span>Bangalore, India</span>
+        </div>
+        <div class="hero-layout grid flex-1 grid-cols-1 items-center lg:grid-cols-12">
+          <div class="hero-copy relative z-20 flex flex-col items-start lg:col-span-6">
+            <h1 class="hero-title font-headline font-bold tracking-[-0.075em] text-pitch-black" id="hero-title">Make it clear.<br><span>Make it work.</span></h1>
+            <p class="hero-description mt-6 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">We build websites, mobile apps, and custom software—and support the cloud and Linux systems behind them.</p>
+            <div class="hero-actions mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+              <a class="hero-primary inline-flex min-h-12 items-center justify-center gap-4 bg-pitch-black px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-electric-violet" href="connect-with-us.html"><span>Talk to the team</span><span aria-hidden="true">↗</span></a>
+              <a class="hero-secondary inline-flex min-h-12 items-center gap-2 text-sm font-semibold text-pitch-black underline decoration-pitch-black/30 underline-offset-4 transition-colors hover:text-electric-violet" href="#services">See what we do <span aria-hidden="true">↓</span></a>
+            </div>
+          </div>
+          <div class="hero-visual relative z-10 lg:col-span-6">
+            <span class="hero-visual-label absolute left-0 top-0 z-10 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">Ov.EL Labs <span class="text-electric-violet">— 01</span></span>
+            <div class="hero-stage relative mx-auto" id="hero-stage">
+              <canvas class="hero-canvas absolute inset-0 h-full w-full" id="hero-canvas" aria-hidden="true"></canvas>
+              <p class="hero-fallback absolute inset-0 flex items-center justify-center text-center font-mono text-xs uppercase tracking-widest text-text-muted" id="hero-fallback">Ov.EL Labs · Software, built to land</p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-bottom flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-pitch-black/15 pt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
+          <span>Indiranagar · 560038</span>
+          <span class="hero-bottom-services">Web <i>—</i> Apps <i>—</i> Software</span>
+          <a class="hidden items-center gap-2 transition-colors hover:text-electric-violet sm:inline-flex" href="#pricing">Starting prices <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border-subtle bg-canvas-surface/40 py-24 md:py-32" id="services" aria-labelledby="services-title">
+      <div class="mx-auto flex max-w-6xl flex-col gap-12 px-6 lg:px-12">
+        <div class="flex flex-col justify-between gap-5 border-b border-border-subtle pb-6 md:flex-row md:items-end">
+          <div><span class="font-mono text-xs uppercase tracking-widest text-text-muted">What we do</span><h2 class="mt-1 font-headline text-3xl font-bold tracking-tight sm:text-4xl" id="services-title">Software for the whole job.</h2></div>
+          <p class="max-w-sm text-sm leading-relaxed text-text-muted">From the first interface to the systems that keep it running, our work covers the services listed by Ov.EL Labs.</p>
+        </div>
+        <div class="grid grid-cols-1 gap-x-10 md:grid-cols-2">
+          <article class="flex gap-5 border-b border-border-subtle py-7"><span class="font-mono text-xs text-electric-violet">01</span><div><h3 class="font-headline text-xl font-semibold">Complete web development</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-text-muted">Websites and web applications, from initial build through delivery.</p></div></article>
+          <article class="flex gap-5 border-b border-border-subtle py-7"><span class="font-mono text-xs text-electric-violet">02</span><div><h3 class="font-headline text-xl font-semibold">App development</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-text-muted">Applications shaped around the product and the people using it.</p></div></article>
+          <article class="flex gap-5 border-b border-border-subtle py-7"><span class="font-mono text-xs text-electric-violet">03</span><div><h3 class="font-headline text-xl font-semibold">iOS development</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-text-muted">Native iOS app development for your mobile product.</p></div></article>
+          <article class="flex gap-5 border-b border-border-subtle py-7"><span class="font-mono text-xs text-electric-violet">04</span><div><h3 class="font-headline text-xl font-semibold">Cloud integration</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-text-muted">Cloud services connected to your application and workflow.</p></div></article>
+          <article class="flex gap-5 border-b border-border-subtle py-7 md:col-span-2"><span class="font-mono text-xs text-electric-violet">05</span><div><h3 class="font-headline text-xl font-semibold">Linux server support</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-text-muted">Hands-on support for Linux server setup and maintenance.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-section border-t border-border-subtle py-24 md:py-32" id="pricing" aria-labelledby="pricing-title">
+      <div class="pricing-inner mx-auto flex max-w-6xl flex-col gap-12 px-6 lg:px-12">
+        <div class="pricing-heading flex flex-col justify-between gap-5 border-b border-border-subtle pb-6 md:flex-row md:items-end">
+          <div><span class="font-mono text-xs uppercase tracking-widest text-text-muted">From the brochure</span><h2 class="mt-1 font-headline text-3xl font-bold tracking-tight sm:text-4xl" id="pricing-title">Starting prices</h2></div>
+          <p class="max-w-sm text-sm leading-relaxed text-text-muted">These are starting points. Final pricing depends on the scope of the project.</p>
+        </div>
+        <div class="pricing-horizontal-stage" id="pricing-horizontal-stage">
+          <div class="pricing-progress" role="group" aria-label="Pricing card progress">
+            <div class="mini-deck" id="mini-deck" aria-hidden="true">
+              <span class="mini-card active">01</span>
+              <span class="mini-card">02</span>
+              <span class="mini-card">03</span>
+              <span class="mini-card">04</span>
+            </div>
+            <span class="mini-label" id="mini-label" aria-live="polite">CARD 01 / 04</span>
+          </div>
+          <div class="pricing-track" id="pricing-cards">
+            <article class="pricing-card-h" data-card-index="0">
+              <div class="card-glare-h" aria-hidden="true"></div>
+              <div>
+                <div class="pricing-card-meta"><span>01 / WEBSITE &amp; APP</span><span class="pricing-card-pill">STARTING PRICE</span></div>
+                <h3>Static</h3>
+                <p class="pricing-card-kind">SITE / APP</p>
+                <div class="pricing-card-price"><span>Starting at</span><strong>₹8,000</strong></div>
+                <p class="pricing-card-scope">Final pricing depends on the scope of the project.</p>
+              </div>
+              <a class="pricing-card-action" href="mailto:hello@ovelab.in?subject=Enquiry%20-%20Static%20site%20or%20app"><span>Discuss static site / app</span><span aria-hidden="true">→</span></a>
+            </article>
+            <article class="pricing-card-h" data-card-index="1">
+              <div class="card-glare-h" aria-hidden="true"></div>
+              <div>
+                <div class="pricing-card-meta"><span>02 / WEBSITE &amp; APP</span><span class="pricing-card-pill">STARTING PRICE</span></div>
+                <h3>Dynamic</h3>
+                <p class="pricing-card-kind">SITE / APP</p>
+                <div class="pricing-card-price"><span>Starting at</span><strong>₹15,000</strong></div>
+                <p class="pricing-card-scope">Final pricing depends on the scope of the project.</p>
+              </div>
+              <a class="pricing-card-action pricing-card-action-accent" href="mailto:hello@ovelab.in?subject=Enquiry%20-%20Dynamic%20site%20or%20app"><span>Discuss dynamic site / app</span><span aria-hidden="true">→</span></a>
+            </article>
+            <article class="pricing-card-h" data-card-index="2">
+              <div class="card-glare-h" aria-hidden="true"></div>
+              <div>
+                <div class="pricing-card-meta"><span>03 / BESPOKE BUILD</span><span class="pricing-card-pill">STARTING PRICE</span></div>
+                <h3>Custom</h3>
+                <p class="pricing-card-kind">SOFTWARE / APP</p>
+                <div class="pricing-card-price"><span>Starting at</span><strong>₹18,000</strong></div>
+                <p class="pricing-card-scope">Final pricing depends on the scope of the project.</p>
+              </div>
+              <a class="pricing-card-action" href="mailto:hello@ovelab.in?subject=Enquiry%20-%20Custom%20software%20or%20app"><span>Discuss custom software / app</span><span aria-hidden="true">→</span></a>
+            </article>
+            <article class="pricing-card-h ai-service-card" data-card-index="3">
+              <div class="card-glare-h" aria-hidden="true"></div>
+              <div>
+                <div class="pricing-card-meta"><span>04 / AI SERVICES</span><span class="pricing-card-pill">FLAGSHIP SERVICE</span></div>
+                <h3>AI Services</h3>
+                <p class="pricing-card-kind">AI / ML</p>
+                <div class="pricing-card-price"><span>Starting at</span><strong>₹25,000</strong></div>
+                <p class="pricing-card-scope">Final pricing depends on the scope of the project.</p>
+              </div>
+              <a class="pricing-card-action" href="mailto:hello@ovelab.in?subject=Enquiry%20-%20AI%20services"><span>Discuss AI services</span><span aria-hidden="true">→</span></a>
+            </article>
+          </div>
+        </div>
+        <div class="pricing-note flex flex-col gap-3 border-t border-border-subtle pt-5 text-sm text-text-muted sm:flex-row sm:items-center sm:justify-between">
+          <span>Forums and “Contact Me” plugins are listed as add-ons.</span><span class="font-mono text-xs uppercase tracking-wider text-pitch-black">Add-ons from ₹3,000</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border-subtle bg-canvas-surface/40 py-24 md:py-32" id="about" aria-labelledby="about-title">
+      <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:px-12">
+        <div class="lg:col-span-4"><span class="font-mono text-xs uppercase tracking-widest text-text-muted">Our motto · 2026</span><h2 class="mt-2 font-headline text-3xl font-bold tracking-tight sm:text-4xl" id="about-title">A little about us.</h2></div>
+        <div class="lg:col-span-8 lg:border-l lg:border-border-subtle lg:pl-12">
+          <p class="font-headline text-3xl font-medium leading-tight tracking-tight sm:text-5xl">“Pursuing precision with every line.”</p>
+          <p class="mt-6 font-headline text-xl text-text-muted">We craft your impressions.</p>
+          <p class="mt-10 font-mono text-xs uppercase tracking-widest text-text-muted">Ov.EL HQ · Bangalore · Indiranagar 560038</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border-subtle py-24 md:py-32" id="contact" aria-labelledby="contact-title">
+      <div class="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:px-12">
+        <div class="lg:col-span-6"><span class="font-mono text-xs uppercase tracking-widest text-electric-violet">Contact Ov.EL Labs</span><h2 class="mt-2 font-headline text-3xl font-bold tracking-tight sm:text-5xl" id="contact-title">Tell us what you’re building.</h2><p class="mt-5 max-w-md text-base leading-relaxed text-text-muted">Share a little about the project and reach the team directly.</p></div>
+        <div class="flex flex-col gap-6 border-t border-border-subtle pt-6 lg:col-span-5 lg:col-start-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+          <div><span class="block font-mono text-xs uppercase tracking-wider text-text-muted">Email</span><a class="mt-1 inline-block text-xl font-semibold hover:text-electric-violet" href="mailto:hello@ovelab.in">hello@ovelab.in</a></div>
+          <div><span class="block font-mono text-xs uppercase tracking-wider text-text-muted">Phone</span><a class="mt-1 inline-block text-xl font-semibold hover:text-electric-violet" href="tel:+919741198442">+91 97411 98442</a></div>
+          <div><span class="block font-mono text-xs uppercase tracking-wider text-text-muted">Website</span><a class="mt-1 inline-block text-xl font-semibold hover:text-electric-violet" href="https://www.ovelab.in">www.ovelab.in ↗</a></div>
+          <p class="font-mono text-xs uppercase tracking-wider text-text-muted">Indiranagar, Bangalore 560038</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-top">
+        <div class="site-footer-intro">
+          <p class="site-footer-eyebrow">Ov.EL Labs <span>/</span> Bangalore, India</p>
+          <h2>Tell us what you’re building.</h2>
+          <a class="site-footer-contact" href="mailto:hello@ovelab.in">hello@ovelab.in <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="site-footer-links">
+          <div>
+            <h3>Explore</h3>
+            <a href="#services">Services</a>
+            <a href="#pricing">Starting prices</a>
+            <a href="#about">About Ov.EL</a>
+          </div>
+          <div>
+            <h3>Get in touch</h3>
+            <a href="tel:+919741198442">+91 97411 98442</a>
+            <span>Indiranagar, Bangalore 560038</span>
+          </div>
+        </div>
+      </div>
+      <a class="site-footer-wordmark" href="#home" aria-label="Ov.EL Labs home">
+        <img src="v%20(1)%20(1).png" alt="Ov.EL Labs">
+      </a>
+      <div class="site-footer-bottom">
+        <span>© 2026 Ov.EL Labs</span>
+        <span>Software studio · Bangalore, India</span>
+        <a href="#home">Back to top <span aria-hidden="true">↑</span></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
