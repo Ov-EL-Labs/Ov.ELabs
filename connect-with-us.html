@@ -531,6 +531,10 @@
               </select>
             </div>
             <div class="field full">
+              <label for="referral">Do you have an employee referral? <span class="field-hint">Optional · Referral code or team member name</span></label>
+              <input id="referral" name="referral" class="mono font-semibold" placeholder="e.g. OVEL-SATWIK, or team member name" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="field full">
               <label for="details">A little about what you're building <span class="field-hint" id="char-hint">A few sentences</span></label>
               <textarea id="details" name="details" placeholder="What are you hoping to create? Tell us a bit about the idea, your timeline, or anything you're curious about..." required></textarea>
             </div>
@@ -616,6 +620,7 @@
         name: data.get('name'),
         email: data.get('email'),
         project: data.get('project'),
+        referral: (data.get('referral') || '').trim(),
         details: data.get('details')
       };
 
@@ -662,6 +667,7 @@
               <div class="alert-summary">
                 <div class="summary-item"><span class="summary-k">From</span><span class="summary-v">${escapeHtml(payload.name)} (${escapeHtml(payload.email)})</span></div>
                 <div class="summary-item"><span class="summary-k">Looking for</span><span class="summary-v">${escapeHtml(payload.project)}</span></div>
+                ${payload.referral ? `<div class="summary-item"><span class="summary-k">Referral</span><span class="summary-v mono">${escapeHtml(payload.referral)}</span></div>` : ''}
                 <div class="summary-item"><span class="summary-k">Response time</span><span class="summary-v">Within 24 hours</span></div>
               </div>
 
@@ -728,6 +734,14 @@
         });
       }
     });
+
+    // Auto pre-fill referral from URL query: ?ref=... or ?code=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref') || urlParams.get('code');
+    if (refCode) {
+      const referralInput = document.querySelector('#referral');
+      if (referralInput) referralInput.value = refCode.trim();
+    }
 
     function escapeHtml(str) {
       if (!str) return '';
