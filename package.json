@@ -4,7 +4,7 @@
   "description": "Ov.EL website — design and engineering studio",
   "private": true,
   "scripts": {
-    "dev": "python -m http.server 8000",
+    "dev": "python3 -m http.server 8000",
     "build": "echo 'No build step'",
     "serve": "npx serve ."
   },
